@@ -1,163 +1,394 @@
-<!DOCTYPE html>
-<html lang="tr" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erkan Demirci | Blog - Yapay Zeka & Robotik</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Font Awesome (İkonlar için) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- Google Fonts: Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
-    
-    <style>
-        /* Temel font ailesini Inter olarak ayarlıyoruz */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0f172a; /* Koyu mavi-gri arka plan */
-        }
+import React, { useState, useEffect } from 'react';
+import { 
+  Instagram, 
+  Youtube,
+  Linkedin, 
+  PenSquare, 
+  X, 
+  Plus, 
+  ChevronRight,
+  Calendar,
+  Share2,
+  Code2,
+  Layers,
+  Zap,
+  Copy,
+  Check
+} from 'lucide-react';
+
+const App = () => {
+  // --- STATE YÖNETİMİ ---
+  
+  // Blog yazılarını tutan state
+  const [posts, setPosts] = useState([
+    {
+      id: 1,
+      title: "Hoş Geldiniz!",
+      content: "Kişisel web sayfama hoş geldiniz. Buradan hem sosyal medya hesaplarıma ulaşabilir hem de son paylaştığım yazıları okuyabilirsiniz.",
+      date: "15 Aralık 2024",
+      likes: 12
+    },
+    {
+      id: 2,
+      title: "Yeni Projeler Yolda",
+      content: "Yakında fotoğrafçılık üzerine yeni çalışmalarımı Instagram hesabımdan ve buradan duyuracağım. Takipte kalın!",
+      date: "14 Aralık 2024",
+      likes: 8
+    }
+  ]);
+
+  // Yeni yazı ekleme modu
+  const [isWriting, setIsWriting] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [newContent, setNewContent] = useState("");
+  
+  // Proje Detay Modal State'i
+  const [showProjectDetails, setShowProjectDetails] = useState(false);
+  
+  // Kopyalama animasyonu için state
+  const [copiedId, setCopiedId] = useState(null);
+
+  // Link Listesi (Sadece Instagram ve YouTube)
+  const links = [
+    { id: 1, title: "Instagram", icon: <Instagram size={20} />, url: "https://www.instagram.com/erkanndemirrci/", color: "bg-gradient-to-r from-purple-500 to-pink-500" },
+    { id: 2, title: "YouTube Kanalım", icon: <Youtube size={20} />, url: "https://www.youtube.com/@erkanndemirrci", color: "bg-red-600" },
+    { id: 3, title: "LinkedIn", icon: <Linkedin size={20} />, url: "https://www.linkedin.com/in/erkan-demirci-4137aa248/", color: "bg-blue-700" },
+  ];
+
+  // --- FONKSİYONLAR ---
+
+  const handleAddPost = (e) => {
+    e.preventDefault();
+    if (!newTitle.trim() || !newContent.trim()) return;
+
+    const newPost = {
+      id: Date.now(),
+      title: newTitle,
+      content: newContent,
+      date: new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }),
+      likes: 0
+    };
+
+    setPosts([newPost, ...posts]);
+    setNewTitle("");
+    setNewContent("");
+    setIsWriting(false);
+  };
+
+  const handleDeletePost = (id) => {
+    setPosts(posts.filter(post => post.id !== id));
+  };
+  
+  const copyToClipboard = (text, id) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 font-sans text-gray-800 relative selection:bg-purple-200">
+      
+      {/* Arka Plan Dekoru */}
+      <div className="fixed top-0 left-0 w-full h-64 bg-gradient-to-b from-purple-600 to-indigo-800 rounded-b-[40px] shadow-lg z-0"></div>
+
+      <div className="relative z-10 max-w-md mx-auto pt-12 px-4 pb-20">
         
-        /* Başlıklar için özel gradient */
-        .text-gradient {
-            background-image: linear-gradient(to right, #3b82f6, #14b8a6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            color: transparent;
-        }
-    </style>
-</head>
-<body class="text-gray-200">
+        {/* --- PROFİL BÖLÜMÜ --- */}
+        <header className="flex flex-col items-center text-center mb-8 animate-fade-in-down">
+          <div className="w-28 h-28 rounded-full border-4 border-white shadow-xl overflow-hidden bg-white mb-4">
+            {/* NOT: YouTube profil fotoğrafını kullanmak için: YouTube'da resme sağ tıkla -> "Resim adresini kopyala" -> Buraya yapıştır. */}
+            <img 
+              src="https://yt3.ggpht.com/R3ghcbnJlzeWOxmsrf2bLzSVfpMEDIuyrgYagmVUyrjBCI-woB29uwoHPtW9IfVVVBrexiI6yQ=s600-c-k-c0x00ffffff-no-rj-rp-mo" 
+              alt="Erkan Demirci" 
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <h1 className="text-2xl font-bold text-white drop-shadow-md">Erkan Demirci</h1>
+          <p className="text-purple-100 text-sm mt-1 max-w-xs">
+            Dijital İçerik Üreticisi | Blogger | Gezgin
+            <br/>
+            Genç Yazılımcı
+          </p>
+        </header>
 
-    <!-- Navigasyon Barı -->
-    <header class="sticky top-0 z-50 w-full bg-slate-900/70 backdrop-blur-lg shadow-md">
-        <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <!-- Logo / İsim -->
-                <div class="flex-shrink-0">
-                    <a href="#" class="text-2xl font-bold text-white">Erkan Demirci</a>
-                </div>
-                
-                <!-- Menü Linkleri -->
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-4">
-                        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Ana Sayfa</a>
-                        <a href="#hakkinda" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Hakkında</a>
-                        <a href="#blog" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Blog</a>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </header>
+        {/* --- LİNKLER BÖLÜMÜ --- */}
+        <section className="space-y-3 mb-8">
+          {links.map((link) => (
+            <a 
+              key={link.id} 
+              href={link.url}
+              className={`flex items-center justify-between p-4 rounded-xl text-white shadow-md transform transition-all hover:scale-[1.02] active:scale-95 ${link.color}`}
+            >
+              <div className="flex items-center gap-3">
+                {link.icon}
+                <span className="font-medium">{link.title}</span>
+              </div>
+              <ChevronRight size={18} className="opacity-70" />
+            </a>
+          ))}
+        </section>
 
-    <!-- Ana İçerik -->
-    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-
-        <!-- Hakkında Bölümü (Hero) -->
-        <section id="hakkinda" class="py-24 md:py-32 flex flex-col md:flex-row items-center justify-between">
-            <!-- Sol Taraf: Metin ve Sosyal Medya -->
-            <div class="md:w-2/3 text-center md:text-left mb-10 md:mb-0">
-                <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-4">
-                    Merhaba, ben <span class="text-gradient">Erkan Demirci</span>
-                </h1>
-                <p class="text-xl md:text-2xl text-gray-300 mb-8">
-                    Üretken Yapay Zeka & Robotik Kodlama meraklısıyım. Teknoloji ve eğitim üzerine notlarımı burada paylaşıyorum.
+        {/* --- PROJE DETAYLARI BUTONU --- */}
+        <section className="mb-10 animate-scale-up" style={{animationDelay: '0.2s'}}>
+          <div 
+            onClick={() => setShowProjectDetails(true)}
+            className="bg-gray-900 rounded-xl p-6 text-white shadow-xl relative overflow-hidden border border-gray-700 cursor-pointer group hover:border-purple-500 transition-colors"
+          >
+            {/* Dekoratif Efektler */}
+            <div className="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-purple-500 opacity-20 rounded-full blur-2xl group-hover:opacity-30 transition-opacity"></div>
+            <div className="absolute bottom-0 left-0 -mb-8 -ml-8 w-24 h-24 bg-indigo-500 opacity-20 rounded-full blur-2xl"></div>
+            
+            <div className="relative z-10 flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-bold flex items-center gap-2 mb-2 text-purple-300">
+                  <Code2 size={20} />
+                  Ünlü Oyuncularla Film Setleri
+                </h3>
+                <p className="text-gray-400 text-sm">
+                  Kullandığım Promptlar ve detaylar için tıklayın.
                 </p>
-                <!-- Sosyal Medya İkonları -->
-                <div class="flex justify-center md:justify-start space-x-6">
-                    <a href="https://www.linkedin.com/in/erkan-demirci-4137aa248/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-blue-500 transition-colors duration-300">
-                        <i class="fab fa-linkedin fa-3x"></i>
-                    </a>
-                    <a href="https://www.instagram.com/erkanndemirrci/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-pink-500 transition-colors duration-300">
-                        <i class="fab fa-instagram fa-3x"></i>
-                    </a>
-                </div>
+              </div>
+              <ChevronRight size={24} className="text-gray-500 group-hover:text-white transition-colors" />
             </div>
-            
-            <!-- Sağ Taraf: Profil Fotoğrafı -->
-            <div class="md:w-1/3 flex justify-center">
-                <img 
-                    src="https://yt3.ggpht.com/hGxvU4d037guVDV8_6HqkCekpo4w62lFlNc5NJfdUThVX8iFZk11kFKTd5kfe22jDyUo_GzoJg=s600-c-k-c0x00ffffff-no-rj-rp-mo" 
-                    alt="Erkan Demirci Profil Fotoğrafı" 
-                    class="rounded-full w-48 h-48 md:w-64 md:h-64 object-cover border-8 border-gray-700 shadow-2xl"
-                    onerror="this.src='https://placehold.co/256x256/3b82f6/FFFFFF?text=ED';"
-                >
-                <!-- 
-                    Not: Profil fotoğrafınız eklendi.
-                -->
-            </div>
+          </div>
         </section>
 
-        <!-- Blog Bölümü -->
-        <section id="blog" class="py-20">
-            <h2 class="text-3xl md:text-4xl font-bold text-center text-white mb-12">
-                Son Yazılarım
-            </h2>
-            
-            <!-- Blog Kartları Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                
-                <!-- Kart 1: Üretken Yapay Zeka -->
-                <div class="bg-slate-800 rounded-xl shadow-2xl overflow-hidden transition-transform duration-300 hover:scale-[1.03]">
-                    <img src="https://placehold.co/600x400/10b981/FFFFFF?text=Yapay+Zeka" alt="Üretken Yapay Zeka" class="w-full h-56 object-cover">
-                    <div class="p-6 md:p-8">
-                        <h3 class="text-2xl font-bold text-white mb-4">Üretken Yapay Zeka Nedir?</h3>
-                        <p class="text-gray-300 leading-relaxed">
-                            Üretken Yapay Zeka (Generative AI), girilen metin, görüntü, ses veya verilerden yola çıkarak yeni içerikler üretebilen gelişmiş yapay zeka teknolojileridir. Metin yazabilir, görsel oluşturabilir, kod üretebilir, videolar hazırlayabilir ve karmaşık görevleri otomatikleştirebilir. Eğitimden iş süreçlerine, tasarımdan veri analizine kadar birçok alanda yaratıcılığı ve verimliliği artırmak için kullanılır.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Kart 2: Robotik Kodlama -->
-                <div class="bg-slate-800 rounded-xl shadow-2xl overflow-hidden transition-transform duration-300 hover:scale-[1.03]">
-                    <img src="https://placehold.co/600x400/f59e0b/FFFFFF?text=Robotik" alt="Robotik Kodlama" class="w-full h-56 object-cover">
-                    <div class="p-6 md:p-8">
-                        <h3 class="text-2xl font-bold text-white mb-4">Robotik Kodlama Nedir?</h3>
-                        <p class="text-gray-300 leading-relaxed">
-                            Robotik kodlama, robotların belirli görevleri yerine getirmesi için yazılım ve donanımın bir arada kullanıldığı eğitim sürecidir. Öğrenciler sensörler, motorlar ve kontrol kartlarıyla çalışarak robotlarını programlar; problem çözme, algoritmik düşünme ve yaratıcılık becerilerini geliştirir. STEM temelli bu eğitim, çocuklara geleceğin teknolojilerini erken yaşta keşfetme fırsatı sunar.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Kart 3: (Ekstra İçerik) -->
-                <div class="bg-slate-800 rounded-xl shadow-2xl overflow-hidden transition-transform duration-300 hover:scale-[1.03]">
-                    <img src="https://placehold.co/600x400/8b5cf6/FFFFFF?text=AI+Gelecegi" alt="Yapay Zekanın Geleceği" class="w-full h-56 object-cover">
-                    <div class="p-6 md:p-8">
-                        <h3 class="text-2xl font-bold text-white mb-4">Yapay Zekanın Geleceği</h3>
-                        <p class="text-gray-300 leading-relaxed">
-                            Yapay zeka, sadece otomasyonu değil, aynı zamanda yaratıcılığı da dönüştürüyor. Gelecekte, kişiselleştirilmiş tıp, otonom sistemler ve daha akıllı eğitim araçlarıyla hayatımızın her alanına entegre olacak. Bu teknoloji, karmaşık sorunlara yenilikçi çözümler getirerek insan potansiyelini genişletecek.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Kart 4: (Ekstra İçerik) -->
-                <div class="bg-slate-800 rounded-xl shadow-2xl overflow-hidden transition-transform duration-300 hover:scale-[1.03]">
-                    <img src="https://placehold.co/600x400/ec4899/FFFFFF?text=STEM+Egitimi" alt="Robotik Kodlamanın Önemi" class="w-full h-56 object-cover">
-                    <div class="p-6 md:p-8">
-                        <h3 class="text-2xl font-bold text-white mb-4">Robotik Kodlamanın Önemi</h3>
-                        <p class="text-gray-300 leading-relaxed">
-                            Robotik kodlama, genç beyinlere analitik düşünme ve problem çözme yeteneği kazandırır. Bu beceriler, sadece mühendislikte değil, 21. yüzyılın her sektöründe kritik bir rol oynamaktadır. Öğrenciler, soyut kodları somut hareketlere dönüştürerek kalıcı ve uygulamalı bir öğrenme deneyimi yaşar.
-                        </p>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-slate-900 mt-20">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
-            <p class="text-gray-400">&copy; 2025 Erkan Demirci. Tüm hakları saklıdır.</p>
+        {/* --- AYIRICI --- */}
+        <div className="flex items-center gap-4 mb-6">
+          <div className="h-px bg-gray-300 flex-1"></div>
+          <span className="text-gray-400 text-sm font-medium uppercase tracking-wider">Blog & Güncellemeler</span>
+          <div className="h-px bg-gray-300 flex-1"></div>
         </div>
-    </footer>
 
-</body>
-</html>
+        {/* --- BLOG AKIŞI --- */}
+        <section className="space-y-6">
+          {posts.length === 0 ? (
+            <div className="text-center text-gray-400 py-10">Henüz bir yazı paylaşılmadı.</div>
+          ) : (
+            posts.map((post) => (
+              <article key={post.id} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 transition-shadow hover:shadow-md">
+                <div className="flex justify-between items-start mb-2">
+                  <h2 className="text-lg font-bold text-gray-800">{post.title}</h2>
+                  <button 
+                    onClick={() => handleDeletePost(post.id)}
+                    className="text-gray-300 hover:text-red-400 text-xs"
+                    title="Yazıyı Sil"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+                <p className="text-gray-600 text-sm leading-relaxed mb-4 whitespace-pre-wrap">
+                  {post.content}
+                </p>
+                <div className="flex items-center justify-between text-xs text-gray-400 border-t pt-3 mt-2">
+                  <div className="flex items-center gap-1">
+                    <Calendar size={12} />
+                    <span>{post.date}</span>
+                  </div>
+                  <button className="flex items-center gap-1 hover:text-purple-600 transition-colors">
+                    <Share2 size={12} />
+                    <span>Paylaş</span>
+                  </button>
+                </div>
+              </article>
+            ))
+          )}
+        </section>
+
+        {/* --- FOOTER --- */}
+        <footer className="mt-12 text-center text-gray-400 text-sm pb-8">
+          <p>&copy; {new Date().getFullYear()} Erkan Demirci. Tüm Hakları Saklıdır.</p>
+        </footer>
+
+      </div>
+
+      {/* --- YENİ YAZI EKLEME BUTONU (FAB) --- */}
+      <button 
+        onClick={() => setIsWriting(true)}
+        className="fixed bottom-6 right-6 bg-indigo-600 text-white p-4 rounded-full shadow-lg shadow-indigo-300 hover:bg-indigo-700 transition-transform hover:scale-110 active:scale-90 z-40"
+      >
+        <PenSquare size={24} />
+      </button>
+
+      {/* --- YAZI EKLEME MODALI --- */}
+      {isWriting && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl relative animate-scale-up">
+            <button 
+              onClick={() => setIsWriting(false)} 
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-800"
+            >
+              <X size={24} />
+            </button>
+            
+            <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <Plus size={20} className="text-purple-600"/>
+              Yeni Yazı Ekle
+            </h3>
+            
+            <form onSubmit={handleAddPost} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Başlık</label>
+                <input 
+                  type="text" 
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  placeholder="Bugün aklında ne var?"
+                  className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all"
+                  autoFocus
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">İçerik</label>
+                <textarea 
+                  value={newContent}
+                  onChange={(e) => setNewContent(e.target.value)}
+                  placeholder="Düşüncelerini buraya yaz..."
+                  className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all h-32 resize-none"
+                ></textarea>
+              </div>
+
+              <button 
+                type="submit" 
+                className="w-full bg-purple-600 text-white font-medium py-3 rounded-lg hover:bg-purple-700 active:transform active:scale-[0.98] transition-all shadow-md shadow-purple-200"
+              >
+                Yayınla
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* --- PROJE DETAYLARI MODALI --- */}
+      {showProjectDetails && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in overflow-y-auto">
+          <div className="bg-gray-900 w-full max-w-2xl rounded-2xl shadow-2xl relative animate-scale-up border border-gray-700 my-8">
+            {/* Header */}
+            <div className="sticky top-0 bg-gray-900/95 backdrop-blur border-b border-gray-700 p-6 rounded-t-2xl z-20 flex justify-between items-center">
+              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                <Code2 size={24} className="text-purple-400"/>
+                Ünlü Oyuncularla Film Setleri
+              </h3>
+              <button 
+                onClick={() => setShowProjectDetails(false)} 
+                className="text-gray-400 hover:text-white bg-gray-800 hover:bg-gray-700 p-2 rounded-full transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            
+            {/* Content */}
+            <div className="p-6 space-y-8 overflow-y-auto max-h-[70vh]">
+              
+              {/* Google Gemini Prompt */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-purple-300 font-semibold flex items-center gap-2">
+                    <Zap size={18} /> Google Gemini Prompt
+                  </h4>
+                  <button 
+                    onClick={() => copyToClipboard(`Yüklediğim fotoğraftaki kişiyi referans al.\nBu kişi, [Oyuncu İsmi] ile birlikte [Flim ve Dizi ] setinde selfie çekiyormuş gibi görünsün.\n\nKamera önden tutulmuş olsun, kol hafif öne uzanmış klasik selfie açısı olsun.\nİki kişi kadrajda yakın planda yer alsın.\nİfadeler doğal, samimi ve eğlenceli olsun; gerçek bir set arası selfie hissi versin.\n\nArka planda [Flim veya Dizi]’nın çekim seti net şekilde görülsün.\nSet ekipmanları, ışıklar ve mekan filmin atmosferine birebir uygun olsun.\n\nYüz hatları kesinlikle bozulmasın.\nÖzellikle referans fotoğraftaki kişinin yüzü birebir korunsun.\nÜnlü oyuncu gerçekçi ve tanınabilir olsun.\n\nProfesyonel sinema ışıklandırması, doğal renkler, ultra gerçekçi, yüksek çözünürlük.\nFotoğraf gerçek bir kamera ile çekilmiş gibi görünsün.`, 'gemini')}
+                    className="flex items-center gap-1 text-xs bg-gray-800 text-gray-300 px-3 py-1 rounded hover:bg-gray-700 transition-colors border border-gray-600"
+                  >
+                    {copiedId === 'gemini' ? <Check size={12} className="text-green-400"/> : <Copy size={12} />}
+                    {copiedId === 'gemini' ? "Kopyalandı" : "Kopyala"}
+                  </button>
+                </div>
+                <div className="bg-gray-800 p-4 rounded-lg border border-gray-700 text-gray-300 text-sm leading-relaxed whitespace-pre-wrap font-mono relative group">
+                  Yüklediğim fotoğraftaki kişiyi referans al.
+                  Bu kişi, [Oyuncu İsmi] ile birlikte [Flim ve Dizi ] setinde selfie çekiyormuş gibi görünsün.
+                  <br/><br/>
+                  Kamera önden tutulmuş olsun, kol hafif öne uzanmış klasik selfie açısı olsun.
+                  İki kişi kadrajda yakın planda yer alsın.
+                  İfadeler doğal, samimi ve eğlenceli olsun; gerçek bir set arası selfie hissi versin.
+                  <br/><br/>
+                  Arka planda [Flim veya Dizi]’nın çekim seti net şekilde görülsün.
+                  Set ekipmanları, ışıklar ve mekan filmin atmosferine birebir uygun olsun.
+                  <br/><br/>
+                  Yüz hatları kesinlikle bozulmasın.
+                  Özellikle referans fotoğraftaki kişinin yüzü birebir korunsun.
+                  Ünlü oyuncu gerçekçi ve tanınabilir olsun.
+                  <br/><br/>
+                  Profesyonel sinema ışıklandırması, doğal renkler, ultra gerçekçi, yüksek çözünürlük.
+                  Fotoğraf gerçek bir kamera ile çekilmiş gibi görünsün.
+                </div>
+              </div>
+
+              {/* Kling AI Prompt */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-indigo-300 font-semibold flex items-center gap-2">
+                    <Layers size={18} /> Kling AI Prompt
+                  </h4>
+                  <button 
+                    onClick={() => copyToClipboard(`Create a hyper-realistic cinematic image-to-video sequence using the uploaded start image as the opening frame and the uploaded end image as the final frame.\nThe user remains exactly the same as in both images, with identical face, outfit, hairstyle, and appearance.\nDo not change, redesign, stylize, or alter the user in any way.\nThe video shows the user moving quickly between two different movie sets, as if walking briskly or lightly running behind the scenes to take photos with different characters.\nThe movement feels natural, energetic, and realistic, like a real behind-the-scenes moment captured between takes.\nThe transition between the two images happens through a fast handheld walking motion, passing through film set corridors, lighting equipment, cables, and crew silhouettes.\nUse subtle motion blur and a brief whip-pan effect to transition smoothly from the first set to the second set.\nThe final frame naturally resolves into the end image, as if the user has just arrived at the next set and taken another candid selfie.\nThe entire video should look like it was recorded on a modern smartphone:\n\nhandheld camera feel\nrealistic motion\nnatural facial expressions\nlifelike skin texture\ncinematic lighting\nshallow depth of field\nslight lens glare\nThe environment clearly feels like real film sets, not fictional renders, with professional equipment visible in the background.\nKeep the video smooth, realistic, and cinematic.\nNo exaggerated motion. No fantasy effects.\nThe result should feel like a genuine behind-the-scenes video montage.`, 'kling')}
+                    className="flex items-center gap-1 text-xs bg-gray-800 text-gray-300 px-3 py-1 rounded hover:bg-gray-700 transition-colors border border-gray-600"
+                  >
+                    {copiedId === 'kling' ? <Check size={12} className="text-green-400"/> : <Copy size={12} />}
+                    {copiedId === 'kling' ? "Kopyalandı" : "Kopyala"}
+                  </button>
+                </div>
+                <div className="bg-gray-800 p-4 rounded-lg border border-gray-700 text-gray-300 text-sm leading-relaxed whitespace-pre-wrap font-mono">
+                  Create a hyper-realistic cinematic image-to-video sequence using the uploaded start image as the opening frame and the uploaded end image as the final frame.
+                  The user remains exactly the same as in both images, with identical face, outfit, hairstyle, and appearance.
+                  Do not change, redesign, stylize, or alter the user in any way.
+                  <br/><br/>
+                  The video shows the user moving quickly between two different movie sets, as if walking briskly or lightly running behind the scenes to take photos with different characters.
+                  The movement feels natural, energetic, and realistic, like a real behind-the-scenes moment captured between takes.
+                  The transition between the two images happens through a fast handheld walking motion, passing through film set corridors, lighting equipment, cables, and crew silhouettes.
+                  <br/><br/>
+                  Use subtle motion blur and a brief whip-pan effect to transition smoothly from the first set to the second set.
+                  The final frame naturally resolves into the end image, as if the user has just arrived at the next set and taken another candid selfie.
+                  The entire video should look like it was recorded on a modern smartphone:
+                  <ul className="list-disc list-inside ml-2 mt-1 opacity-80">
+                    <li>handheld camera feel</li>
+                    <li>realistic motion</li>
+                    <li>natural facial expressions</li>
+                    <li>lifelike skin texture</li>
+                    <li>cinematic lighting</li>
+                    <li>shallow depth of field</li>
+                    <li>slight lens glare</li>
+                  </ul>
+                  <br/>
+                  The environment clearly feels like real film sets, not fictional renders, with professional equipment visible in the background.
+                  Keep the video smooth, realistic, and cinematic.
+                  No exaggerated motion. No fantasy effects.
+                  The result should feel like a genuine behind-the-scenes video montage.
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tailwind için özel animasyon stilleri */}
+      <style>{`
+        @keyframes fade-in-down {
+          0% { opacity: 0; transform: translateY(-20px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-down {
+          animation: fade-in-down 0.8s ease-out forwards;
+        }
+        @keyframes scale-up {
+          0% { transform: scale(0.9); opacity: 0; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-scale-up {
+          animation: scale-up 0.2s ease-out forwards;
+        }
+        @keyframes fade-in {
+          0% { opacity: 0; }
+          100% { opacity: 1; }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-out forwards;
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default App;
