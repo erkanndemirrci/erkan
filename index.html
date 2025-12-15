@@ -1,394 +1,430 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Instagram, 
-  Youtube,
-  Linkedin, 
-  PenSquare, 
-  X, 
-  Plus, 
-  ChevronRight,
-  Calendar,
-  Share2,
-  Code2,
-  Layers,
-  Zap,
-  Copy,
-  Check
-} from 'lucide-react';
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erkan Demirci - Kişisel Web Sayfası</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-const App = () => {
-  // --- STATE YÖNETİMİ ---
-  
-  // Blog yazılarını tutan state
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      title: "Hoş Geldiniz!",
-      content: "Kişisel web sayfama hoş geldiniz. Buradan hem sosyal medya hesaplarıma ulaşabilir hem de son paylaştığım yazıları okuyabilirsiniz.",
-      date: "15 Aralık 2024",
-      likes: 12
-    },
-    {
-      id: 2,
-      title: "Yeni Projeler Yolda",
-      content: "Yakında fotoğrafçılık üzerine yeni çalışmalarımı Instagram hesabımdan ve buradan duyuracağım. Takipte kalın!",
-      date: "14 Aralık 2024",
-      likes: 8
-    }
-  ]);
-
-  // Yeni yazı ekleme modu
-  const [isWriting, setIsWriting] = useState(false);
-  const [newTitle, setNewTitle] = useState("");
-  const [newContent, setNewContent] = useState("");
-  
-  // Proje Detay Modal State'i
-  const [showProjectDetails, setShowProjectDetails] = useState(false);
-  
-  // Kopyalama animasyonu için state
-  const [copiedId, setCopiedId] = useState(null);
-
-  // Link Listesi (Sadece Instagram ve YouTube)
-  const links = [
-    { id: 1, title: "Instagram", icon: <Instagram size={20} />, url: "https://www.instagram.com/erkanndemirrci/", color: "bg-gradient-to-r from-purple-500 to-pink-500" },
-    { id: 2, title: "YouTube Kanalım", icon: <Youtube size={20} />, url: "https://www.youtube.com/@erkanndemirrci", color: "bg-red-600" },
-    { id: 3, title: "LinkedIn", icon: <Linkedin size={20} />, url: "https://www.linkedin.com/in/erkan-demirci-4137aa248/", color: "bg-blue-700" },
-  ];
-
-  // --- FONKSİYONLAR ---
-
-  const handleAddPost = (e) => {
-    e.preventDefault();
-    if (!newTitle.trim() || !newContent.trim()) return;
-
-    const newPost = {
-      id: Date.now(),
-      title: newTitle,
-      content: newContent,
-      date: new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }),
-      likes: 0
-    };
-
-    setPosts([newPost, ...posts]);
-    setNewTitle("");
-    setNewContent("");
-    setIsWriting(false);
-  };
-
-  const handleDeletePost = (id) => {
-    setPosts(posts.filter(post => post.id !== id));
-  };
-  
-  const copyToClipboard = (text, id) => {
-    navigator.clipboard.writeText(text);
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 2000);
-  };
-
-  return (
-    <div className="min-h-screen bg-gray-50 font-sans text-gray-800 relative selection:bg-purple-200">
-      
-      {/* Arka Plan Dekoru */}
-      <div className="fixed top-0 left-0 w-full h-64 bg-gradient-to-b from-purple-600 to-indigo-800 rounded-b-[40px] shadow-lg z-0"></div>
-
-      <div className="relative z-10 max-w-md mx-auto pt-12 px-4 pb-20">
-        
-        {/* --- PROFİL BÖLÜMÜ --- */}
-        <header className="flex flex-col items-center text-center mb-8 animate-fade-in-down">
-          <div className="w-28 h-28 rounded-full border-4 border-white shadow-xl overflow-hidden bg-white mb-4">
-            {/* NOT: YouTube profil fotoğrafını kullanmak için: YouTube'da resme sağ tıkla -> "Resim adresini kopyala" -> Buraya yapıştır. */}
-            <img 
-              src="https://yt3.ggpht.com/R3ghcbnJlzeWOxmsrf2bLzSVfpMEDIuyrgYagmVUyrjBCI-woB29uwoHPtW9IfVVVBrexiI6yQ=s600-c-k-c0x00ffffff-no-rj-rp-mo" 
-              alt="Erkan Demirci" 
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <h1 className="text-2xl font-bold text-white drop-shadow-md">Erkan Demirci</h1>
-          <p className="text-purple-100 text-sm mt-1 max-w-xs">
-            Dijital İçerik Üreticisi | Blogger | Gezgin
-            <br/>
-            Genç Yazılımcı
-          </p>
-        </header>
-
-        {/* --- LİNKLER BÖLÜMÜ --- */}
-        <section className="space-y-3 mb-8">
-          {links.map((link) => (
-            <a 
-              key={link.id} 
-              href={link.url}
-              className={`flex items-center justify-between p-4 rounded-xl text-white shadow-md transform transition-all hover:scale-[1.02] active:scale-95 ${link.color}`}
-            >
-              <div className="flex items-center gap-3">
-                {link.icon}
-                <span className="font-medium">{link.title}</span>
-              </div>
-              <ChevronRight size={18} className="opacity-70" />
-            </a>
-          ))}
-        </section>
-
-        {/* --- PROJE DETAYLARI BUTONU --- */}
-        <section className="mb-10 animate-scale-up" style={{animationDelay: '0.2s'}}>
-          <div 
-            onClick={() => setShowProjectDetails(true)}
-            className="bg-gray-900 rounded-xl p-6 text-white shadow-xl relative overflow-hidden border border-gray-700 cursor-pointer group hover:border-purple-500 transition-colors"
-          >
-            {/* Dekoratif Efektler */}
-            <div className="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-purple-500 opacity-20 rounded-full blur-2xl group-hover:opacity-30 transition-opacity"></div>
-            <div className="absolute bottom-0 left-0 -mb-8 -ml-8 w-24 h-24 bg-indigo-500 opacity-20 rounded-full blur-2xl"></div>
-            
-            <div className="relative z-10 flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-bold flex items-center gap-2 mb-2 text-purple-300">
-                  <Code2 size={20} />
-                  Ünlü Oyuncularla Film Setleri
-                </h3>
-                <p className="text-gray-400 text-sm">
-                  Kullandığım Promptlar ve detaylar için tıklayın.
-                </p>
-              </div>
-              <ChevronRight size={24} className="text-gray-500 group-hover:text-white transition-colors" />
-            </div>
-          </div>
-        </section>
-
-        {/* --- AYIRICI --- */}
-        <div className="flex items-center gap-4 mb-6">
-          <div className="h-px bg-gray-300 flex-1"></div>
-          <span className="text-gray-400 text-sm font-medium uppercase tracking-wider">Blog & Güncellemeler</span>
-          <div className="h-px bg-gray-300 flex-1"></div>
-        </div>
-
-        {/* --- BLOG AKIŞI --- */}
-        <section className="space-y-6">
-          {posts.length === 0 ? (
-            <div className="text-center text-gray-400 py-10">Henüz bir yazı paylaşılmadı.</div>
-          ) : (
-            posts.map((post) => (
-              <article key={post.id} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 transition-shadow hover:shadow-md">
-                <div className="flex justify-between items-start mb-2">
-                  <h2 className="text-lg font-bold text-gray-800">{post.title}</h2>
-                  <button 
-                    onClick={() => handleDeletePost(post.id)}
-                    className="text-gray-300 hover:text-red-400 text-xs"
-                    title="Yazıyı Sil"
-                  >
-                    <X size={14} />
-                  </button>
-                </div>
-                <p className="text-gray-600 text-sm leading-relaxed mb-4 whitespace-pre-wrap">
-                  {post.content}
-                </p>
-                <div className="flex items-center justify-between text-xs text-gray-400 border-t pt-3 mt-2">
-                  <div className="flex items-center gap-1">
-                    <Calendar size={12} />
-                    <span>{post.date}</span>
-                  </div>
-                  <button className="flex items-center gap-1 hover:text-purple-600 transition-colors">
-                    <Share2 size={12} />
-                    <span>Paylaş</span>
-                  </button>
-                </div>
-              </article>
-            ))
-          )}
-        </section>
-
-        {/* --- FOOTER --- */}
-        <footer className="mt-12 text-center text-gray-400 text-sm pb-8">
-          <p>&copy; {new Date().getFullYear()} Erkan Demirci. Tüm Hakları Saklıdır.</p>
-        </footer>
-
-      </div>
-
-      {/* --- YENİ YAZI EKLEME BUTONU (FAB) --- */}
-      <button 
-        onClick={() => setIsWriting(true)}
-        className="fixed bottom-6 right-6 bg-indigo-600 text-white p-4 rounded-full shadow-lg shadow-indigo-300 hover:bg-indigo-700 transition-transform hover:scale-110 active:scale-90 z-40"
-      >
-        <PenSquare size={24} />
-      </button>
-
-      {/* --- YAZI EKLEME MODALI --- */}
-      {isWriting && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl relative animate-scale-up">
-            <button 
-              onClick={() => setIsWriting(false)} 
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-800"
-            >
-              <X size={24} />
-            </button>
-            
-            <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <Plus size={20} className="text-purple-600"/>
-              Yeni Yazı Ekle
-            </h3>
-            
-            <form onSubmit={handleAddPost} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Başlık</label>
-                <input 
-                  type="text" 
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  placeholder="Bugün aklında ne var?"
-                  className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all"
-                  autoFocus
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">İçerik</label>
-                <textarea 
-                  value={newContent}
-                  onChange={(e) => setNewContent(e.target.value)}
-                  placeholder="Düşüncelerini buraya yaz..."
-                  className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all h-32 resize-none"
-                ></textarea>
-              </div>
-
-              <button 
-                type="submit" 
-                className="w-full bg-purple-600 text-white font-medium py-3 rounded-lg hover:bg-purple-700 active:transform active:scale-[0.98] transition-all shadow-md shadow-purple-200"
-              >
-                Yayınla
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* --- PROJE DETAYLARI MODALI --- */}
-      {showProjectDetails && (
-        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in overflow-y-auto">
-          <div className="bg-gray-900 w-full max-w-2xl rounded-2xl shadow-2xl relative animate-scale-up border border-gray-700 my-8">
-            {/* Header */}
-            <div className="sticky top-0 bg-gray-900/95 backdrop-blur border-b border-gray-700 p-6 rounded-t-2xl z-20 flex justify-between items-center">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <Code2 size={24} className="text-purple-400"/>
-                Ünlü Oyuncularla Film Setleri
-              </h3>
-              <button 
-                onClick={() => setShowProjectDetails(false)} 
-                className="text-gray-400 hover:text-white bg-gray-800 hover:bg-gray-700 p-2 rounded-full transition-colors"
-              >
-                <X size={20} />
-              </button>
-            </div>
-            
-            {/* Content */}
-            <div className="p-6 space-y-8 overflow-y-auto max-h-[70vh]">
-              
-              {/* Google Gemini Prompt */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-purple-300 font-semibold flex items-center gap-2">
-                    <Zap size={18} /> Google Gemini Prompt
-                  </h4>
-                  <button 
-                    onClick={() => copyToClipboard(`Yüklediğim fotoğraftaki kişiyi referans al.\nBu kişi, [Oyuncu İsmi] ile birlikte [Flim ve Dizi ] setinde selfie çekiyormuş gibi görünsün.\n\nKamera önden tutulmuş olsun, kol hafif öne uzanmış klasik selfie açısı olsun.\nİki kişi kadrajda yakın planda yer alsın.\nİfadeler doğal, samimi ve eğlenceli olsun; gerçek bir set arası selfie hissi versin.\n\nArka planda [Flim veya Dizi]’nın çekim seti net şekilde görülsün.\nSet ekipmanları, ışıklar ve mekan filmin atmosferine birebir uygun olsun.\n\nYüz hatları kesinlikle bozulmasın.\nÖzellikle referans fotoğraftaki kişinin yüzü birebir korunsun.\nÜnlü oyuncu gerçekçi ve tanınabilir olsun.\n\nProfesyonel sinema ışıklandırması, doğal renkler, ultra gerçekçi, yüksek çözünürlük.\nFotoğraf gerçek bir kamera ile çekilmiş gibi görünsün.`, 'gemini')}
-                    className="flex items-center gap-1 text-xs bg-gray-800 text-gray-300 px-3 py-1 rounded hover:bg-gray-700 transition-colors border border-gray-600"
-                  >
-                    {copiedId === 'gemini' ? <Check size={12} className="text-green-400"/> : <Copy size={12} />}
-                    {copiedId === 'gemini' ? "Kopyalandı" : "Kopyala"}
-                  </button>
-                </div>
-                <div className="bg-gray-800 p-4 rounded-lg border border-gray-700 text-gray-300 text-sm leading-relaxed whitespace-pre-wrap font-mono relative group">
-                  Yüklediğim fotoğraftaki kişiyi referans al.
-                  Bu kişi, [Oyuncu İsmi] ile birlikte [Flim ve Dizi ] setinde selfie çekiyormuş gibi görünsün.
-                  <br/><br/>
-                  Kamera önden tutulmuş olsun, kol hafif öne uzanmış klasik selfie açısı olsun.
-                  İki kişi kadrajda yakın planda yer alsın.
-                  İfadeler doğal, samimi ve eğlenceli olsun; gerçek bir set arası selfie hissi versin.
-                  <br/><br/>
-                  Arka planda [Flim veya Dizi]’nın çekim seti net şekilde görülsün.
-                  Set ekipmanları, ışıklar ve mekan filmin atmosferine birebir uygun olsun.
-                  <br/><br/>
-                  Yüz hatları kesinlikle bozulmasın.
-                  Özellikle referans fotoğraftaki kişinin yüzü birebir korunsun.
-                  Ünlü oyuncu gerçekçi ve tanınabilir olsun.
-                  <br/><br/>
-                  Profesyonel sinema ışıklandırması, doğal renkler, ultra gerçekçi, yüksek çözünürlük.
-                  Fotoğraf gerçek bir kamera ile çekilmiş gibi görünsün.
-                </div>
-              </div>
-
-              {/* Kling AI Prompt */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-indigo-300 font-semibold flex items-center gap-2">
-                    <Layers size={18} /> Kling AI Prompt
-                  </h4>
-                  <button 
-                    onClick={() => copyToClipboard(`Create a hyper-realistic cinematic image-to-video sequence using the uploaded start image as the opening frame and the uploaded end image as the final frame.\nThe user remains exactly the same as in both images, with identical face, outfit, hairstyle, and appearance.\nDo not change, redesign, stylize, or alter the user in any way.\nThe video shows the user moving quickly between two different movie sets, as if walking briskly or lightly running behind the scenes to take photos with different characters.\nThe movement feels natural, energetic, and realistic, like a real behind-the-scenes moment captured between takes.\nThe transition between the two images happens through a fast handheld walking motion, passing through film set corridors, lighting equipment, cables, and crew silhouettes.\nUse subtle motion blur and a brief whip-pan effect to transition smoothly from the first set to the second set.\nThe final frame naturally resolves into the end image, as if the user has just arrived at the next set and taken another candid selfie.\nThe entire video should look like it was recorded on a modern smartphone:\n\nhandheld camera feel\nrealistic motion\nnatural facial expressions\nlifelike skin texture\ncinematic lighting\nshallow depth of field\nslight lens glare\nThe environment clearly feels like real film sets, not fictional renders, with professional equipment visible in the background.\nKeep the video smooth, realistic, and cinematic.\nNo exaggerated motion. No fantasy effects.\nThe result should feel like a genuine behind-the-scenes video montage.`, 'kling')}
-                    className="flex items-center gap-1 text-xs bg-gray-800 text-gray-300 px-3 py-1 rounded hover:bg-gray-700 transition-colors border border-gray-600"
-                  >
-                    {copiedId === 'kling' ? <Check size={12} className="text-green-400"/> : <Copy size={12} />}
-                    {copiedId === 'kling' ? "Kopyalandı" : "Kopyala"}
-                  </button>
-                </div>
-                <div className="bg-gray-800 p-4 rounded-lg border border-gray-700 text-gray-300 text-sm leading-relaxed whitespace-pre-wrap font-mono">
-                  Create a hyper-realistic cinematic image-to-video sequence using the uploaded start image as the opening frame and the uploaded end image as the final frame.
-                  The user remains exactly the same as in both images, with identical face, outfit, hairstyle, and appearance.
-                  Do not change, redesign, stylize, or alter the user in any way.
-                  <br/><br/>
-                  The video shows the user moving quickly between two different movie sets, as if walking briskly or lightly running behind the scenes to take photos with different characters.
-                  The movement feels natural, energetic, and realistic, like a real behind-the-scenes moment captured between takes.
-                  The transition between the two images happens through a fast handheld walking motion, passing through film set corridors, lighting equipment, cables, and crew silhouettes.
-                  <br/><br/>
-                  Use subtle motion blur and a brief whip-pan effect to transition smoothly from the first set to the second set.
-                  The final frame naturally resolves into the end image, as if the user has just arrived at the next set and taken another candid selfie.
-                  The entire video should look like it was recorded on a modern smartphone:
-                  <ul className="list-disc list-inside ml-2 mt-1 opacity-80">
-                    <li>handheld camera feel</li>
-                    <li>realistic motion</li>
-                    <li>natural facial expressions</li>
-                    <li>lifelike skin texture</li>
-                    <li>cinematic lighting</li>
-                    <li>shallow depth of field</li>
-                    <li>slight lens glare</li>
-                  </ul>
-                  <br/>
-                  The environment clearly feels like real film sets, not fictional renders, with professional equipment visible in the background.
-                  Keep the video smooth, realistic, and cinematic.
-                  No exaggerated motion. No fantasy effects.
-                  The result should feel like a genuine behind-the-scenes video montage.
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Tailwind için özel animasyon stilleri */}
-      <style>{`
-        @keyframes fade-in-down {
-          0% { opacity: 0; transform: translateY(-20px); }
-          100% { opacity: 1; transform: translateY(0); }
+    <!-- Custom Font (Opsiyonel, varsayılan sans kullanıldı) -->
+    <style>
+        @keyframes fadeInDown {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes scaleUp {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
         .animate-fade-in-down {
-          animation: fade-in-down 0.8s ease-out forwards;
-        }
-        @keyframes scale-up {
-          0% { transform: scale(0.9); opacity: 0; }
-          100% { transform: scale(1); opacity: 1; }
+            animation: fadeInDown 0.8s ease-out forwards;
         }
         .animate-scale-up {
-          animation: scale-up 0.2s ease-out forwards;
-        }
-        @keyframes fade-in {
-          0% { opacity: 0; }
-          100% { opacity: 1; }
+            animation: scaleUp 0.2s ease-out forwards;
         }
         .animate-fade-in {
-          animation: fade-in 0.3s ease-out forwards;
+            animation: fadeIn 0.3s ease-out forwards;
         }
-      `}</style>
-    </div>
-  );
-};
+        
+        /* Scrollbar düzenlemesi */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4B5563; 
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6B7280; 
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 font-sans text-gray-800 relative selection:bg-purple-200">
 
-export default App;
+    <!-- Arka Plan Dekoru -->
+    <div class="fixed top-0 left-0 w-full h-64 bg-gradient-to-b from-purple-600 to-indigo-800 rounded-b-[40px] shadow-lg z-0"></div>
+
+    <div class="relative z-10 max-w-md mx-auto pt-12 px-4 pb-20">
+        
+        <!-- --- PROFİL BÖLÜMÜ --- -->
+        <header class="flex flex-col items-center text-center mb-8 animate-fade-in-down">
+            <div class="w-28 h-28 rounded-full border-4 border-white shadow-xl overflow-hidden bg-white mb-4">
+                <img 
+                    src="https://yt3.ggpht.com/R3ghcbnJlzeWOxmsrf2bLzSVfpMEDIuyrgYagmVUyrjBCI-woB29uwoHPtW9IfVVVBrexiI6yQ=s600-c-k-c0x00ffffff-no-rj-rp-mo" 
+                    alt="Erkan Demirci" 
+                    class="w-full h-full object-cover"
+                >
+            </div>
+            <h1 class="text-2xl font-bold text-white drop-shadow-md">Erkan Demirci</h1>
+            <p class="text-purple-100 text-sm mt-1 max-w-xs">
+                Dijital İçerik Üreticisi | Blogger | Gezgin
+                <br/>
+                Genç Yazılımcı
+            </p>
+        </header>
+
+        <!-- --- LİNKLER BÖLÜMÜ --- -->
+        <section class="space-y-3 mb-8" id="links-container">
+            <!-- Linkler JS ile buraya eklenecek -->
+        </section>
+
+        <!-- --- PROJE DETAYLARI BUTONU --- -->
+        <section class="mb-10 animate-scale-up" style="animation-delay: 0.2s;">
+            <div 
+                onclick="toggleModal('projectModal', true)"
+                class="bg-gray-900 rounded-xl p-6 text-white shadow-xl relative overflow-hidden border border-gray-700 cursor-pointer group hover:border-purple-500 transition-colors"
+            >
+                <!-- Dekoratif Efektler -->
+                <div class="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-purple-500 opacity-20 rounded-full blur-2xl group-hover:opacity-30 transition-opacity"></div>
+                <div class="absolute bottom-0 left-0 -mb-8 -ml-8 w-24 h-24 bg-indigo-500 opacity-20 rounded-full blur-2xl"></div>
+                
+                <div class="relative z-10 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold flex items-center gap-2 mb-2 text-purple-300">
+                            <i data-lucide="code-2"></i>
+                            Ünlü Oyuncularla Film Setleri
+                        </h3>
+                        <p class="text-gray-400 text-sm">
+                            Kullandığım Promptlar ve detaylar için tıklayın.
+                        </p>
+                    </div>
+                    <i data-lucide="chevron-right" class="text-gray-500 group-hover:text-white transition-colors"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- --- AYIRICI --- -->
+        <div class="flex items-center gap-4 mb-6">
+            <div class="h-px bg-gray-300 flex-1"></div>
+            <span class="text-gray-400 text-sm font-medium uppercase tracking-wider">Blog & Güncellemeler</span>
+            <div class="h-px bg-gray-300 flex-1"></div>
+        </div>
+
+        <!-- --- BLOG AKIŞI --- -->
+        <section id="posts-container" class="space-y-6">
+            <!-- Blog yazıları JS ile buraya eklenecek -->
+        </section>
+
+        <!-- --- FOOTER --- -->
+        <footer class="mt-12 text-center text-gray-400 text-sm pb-8">
+            <p>&copy; <span id="year"></span> Erkan Demirci. Tüm Hakları Saklıdır.</p>
+        </footer>
+
+    </div>
+
+    <!-- --- YENİ YAZI EKLEME BUTONU (FAB) --- -->
+    <button 
+        onclick="toggleModal('addPostModal', true)"
+        class="fixed bottom-6 right-6 bg-indigo-600 text-white p-4 rounded-full shadow-lg shadow-indigo-300 hover:bg-indigo-700 transition-transform hover:scale-110 active:scale-90 z-40 flex items-center justify-center"
+    >
+        <i data-lucide="pen-square"></i>
+    </button>
+
+    <!-- --- YAZI EKLEME MODALI --- -->
+    <div id="addPostModal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
+        <div class="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl relative animate-scale-up">
+            <button 
+                onclick="toggleModal('addPostModal', false)" 
+                class="absolute top-4 right-4 text-gray-400 hover:text-gray-800"
+            >
+                <i data-lucide="x"></i>
+            </button>
+            
+            <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <i data-lucide="plus" class="text-purple-600"></i>
+                Yeni Yazı Ekle
+            </h3>
+            
+            <form onsubmit="handleAddPost(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Başlık</label>
+                    <input 
+                        type="text" 
+                        id="newTitle"
+                        placeholder="Bugün aklında ne var?"
+                        class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all"
+                        required
+                    />
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">İçerik</label>
+                    <textarea 
+                        id="newContent"
+                        placeholder="Düşüncelerini buraya yaz..."
+                        class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all h-32 resize-none"
+                        required
+                    ></textarea>
+                </div>
+
+                <button 
+                    type="submit" 
+                    class="w-full bg-purple-600 text-white font-medium py-3 rounded-lg hover:bg-purple-700 active:transform active:scale-[0.98] transition-all shadow-md shadow-purple-200"
+                >
+                    Yayınla
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- --- PROJE DETAYLARI MODALI --- -->
+    <div id="projectModal" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4 backdrop-blur-sm animate-fade-in overflow-y-auto">
+        <div class="bg-gray-900 w-full max-w-2xl rounded-2xl shadow-2xl relative animate-scale-up border border-gray-700 my-8">
+            <!-- Header -->
+            <div class="sticky top-0 bg-gray-900/95 backdrop-blur border-b border-gray-700 p-6 rounded-t-2xl z-20 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="code-2" class="text-purple-400"></i>
+                    Ünlü Oyuncularla Film Setleri
+                </h3>
+                <button 
+                    onclick="toggleModal('projectModal', false)" 
+                    class="text-gray-400 hover:text-white bg-gray-800 hover:bg-gray-700 p-2 rounded-full transition-colors"
+                >
+                    <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+                </button>
+            </div>
+            
+            <!-- Content -->
+            <div class="p-6 space-y-8 overflow-y-auto max-h-[70vh]">
+                
+                <!-- Google Gemini Prompt -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-purple-300 font-semibold flex items-center gap-2">
+                            <i data-lucide="zap" style="width: 18px; height: 18px;"></i> Google Gemini Prompt
+                        </h4>
+                        <button 
+                            onclick="copyToClipboard(this, 'geminiText')"
+                            class="flex items-center gap-1 text-xs bg-gray-800 text-gray-300 px-3 py-1 rounded hover:bg-gray-700 transition-colors border border-gray-600"
+                        >
+                            <span class="btn-icon"><i data-lucide="copy" style="width: 12px; height: 12px;"></i></span>
+                            <span class="btn-text">Kopyala</span>
+                        </button>
+                    </div>
+                    <div id="geminiText" class="bg-gray-800 p-4 rounded-lg border border-gray-700 text-gray-300 text-sm leading-relaxed whitespace-pre-wrap font-mono relative group">Yüklediğim fotoğraftaki kişiyi referans al.
+Bu kişi, [Oyuncu İsmi] ile birlikte [Flim ve Dizi ] setinde selfie çekiyormuş gibi görünsün.
+
+Kamera önden tutulmuş olsun, kol hafif öne uzanmış klasik selfie açısı olsun.
+İki kişi kadrajda yakın planda yer alsın.
+İfadeler doğal, samimi ve eğlenceli olsun; gerçek bir set arası selfie hissi versin.
+
+Arka planda [Flim veya Dizi]’nın çekim seti net şekilde görülsün.
+Set ekipmanları, ışıklar ve mekan filmin atmosferine birebir uygun olsun.
+
+Yüz hatları kesinlikle bozulmasın.
+Özellikle referans fotoğraftaki kişinin yüzü birebir korunsun.
+Ünlü oyuncu gerçekçi ve tanınabilir olsun.
+
+Profesyonel sinema ışıklandırması, doğal renkler, ultra gerçekçi, yüksek çözünürlük.
+Fotoğraf gerçek bir kamera ile çekilmiş gibi görünsün.</div>
+                </div>
+
+                <!-- Kling AI Prompt -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-indigo-300 font-semibold flex items-center gap-2">
+                            <i data-lucide="layers" style="width: 18px; height: 18px;"></i> Kling AI Prompt
+                        </h4>
+                        <button 
+                            onclick="copyToClipboard(this, 'klingText')"
+                            class="flex items-center gap-1 text-xs bg-gray-800 text-gray-300 px-3 py-1 rounded hover:bg-gray-700 transition-colors border border-gray-600"
+                        >
+                            <span class="btn-icon"><i data-lucide="copy" style="width: 12px; height: 12px;"></i></span>
+                            <span class="btn-text">Kopyala</span>
+                        </button>
+                    </div>
+                    <div id="klingText" class="bg-gray-800 p-4 rounded-lg border border-gray-700 text-gray-300 text-sm leading-relaxed whitespace-pre-wrap font-mono">Create a hyper-realistic cinematic image-to-video sequence using the uploaded start image as the opening frame and the uploaded end image as the final frame.
+The user remains exactly the same as in both images, with identical face, outfit, hairstyle, and appearance.
+Do not change, redesign, stylize, or alter the user in any way.
+
+The video shows the user moving quickly between two different movie sets, as if walking briskly or lightly running behind the scenes to take photos with different characters.
+The movement feels natural, energetic, and realistic, like a real behind-the-scenes moment captured between takes.
+The transition between the two images happens through a fast handheld walking motion, passing through film set corridors, lighting equipment, cables, and crew silhouettes.
+
+Use subtle motion blur and a brief whip-pan effect to transition smoothly from the first set to the second set.
+The final frame naturally resolves into the end image, as if the user has just arrived at the next set and taken another candid selfie.
+The entire video should look like it was recorded on a modern smartphone:
+
+• handheld camera feel
+• realistic motion
+• natural facial expressions
+• lifelike skin texture
+• cinematic lighting
+• shallow depth of field
+• slight lens glare
+
+The environment clearly feels like real film sets, not fictional renders, with professional equipment visible in the background.
+Keep the video smooth, realistic, and cinematic.
+No exaggerated motion. No fantasy effects.
+The result should feel like a genuine behind-the-scenes video montage.</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- VERİLER ---
+        const links = [
+            { id: 1, title: "Instagram", icon: "instagram", url: "https://www.instagram.com/erkanndemirrci/", color: "bg-gradient-to-r from-purple-500 to-pink-500" },
+            { id: 2, title: "YouTube Kanalım", icon: "youtube", url: "https://www.youtube.com/@erkanndemirrci", color: "bg-red-600" },
+            { id: 3, title: "LinkedIn", icon: "linkedin", url: "https://www.linkedin.com/in/erkan-demirci-4137aa248/", color: "bg-blue-700" },
+        ];
+
+        let posts = [
+            {
+                id: 1,
+                title: "Hoş Geldiniz!",
+                content: "Kişisel web sayfama hoş geldiniz. Buradan hem sosyal medya hesaplarıma ulaşabilir hem de son paylaştığım yazıları okuyabilirsiniz.",
+                date: "15 Aralık 2024",
+                likes: 12
+            },
+            {
+                id: 2,
+                title: "Yeni Projeler Yolda",
+                content: "Yakında fotoğrafçılık üzerine yeni çalışmalarımı Instagram hesabımdan ve buradan duyuracağım. Takipte kalın!",
+                date: "14 Aralık 2024",
+                likes: 8
+            }
+        ];
+
+        // --- BAŞLANGIÇ ---
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('year').textContent = new Date().getFullYear();
+            renderLinks();
+            renderPosts();
+            lucide.createIcons();
+        });
+
+        // --- RENDER FONKSİYONLARI ---
+        function renderLinks() {
+            const container = document.getElementById('links-container');
+            container.innerHTML = links.map(link => `
+                <a href="${link.url}" class="flex items-center justify-between p-4 rounded-xl text-white shadow-md transform transition-all hover:scale-[1.02] active:scale-95 ${link.color}">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="${link.icon}" style="width: 20px; height: 20px;"></i>
+                        <span class="font-medium">${link.title}</span>
+                    </div>
+                    <i data-lucide="chevron-right" style="width: 18px; height: 18px; opacity: 0.7;"></i>
+                </a>
+            `).join('');
+        }
+
+        function renderPosts() {
+            const container = document.getElementById('posts-container');
+            if (posts.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-400 py-10">Henüz bir yazı paylaşılmadı.</div>';
+            } else {
+                container.innerHTML = posts.map(post => `
+                    <article class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 transition-shadow hover:shadow-md">
+                        <div class="flex justify-between items-start mb-2">
+                            <h2 class="text-lg font-bold text-gray-800">${post.title}</h2>
+                            <button onclick="handleDeletePost(${post.id})" class="text-gray-300 hover:text-red-400 text-xs" title="Yazıyı Sil">
+                                <i data-lucide="x" style="width: 14px; height: 14px;"></i>
+                            </button>
+                        </div>
+                        <p class="text-gray-600 text-sm leading-relaxed mb-4 whitespace-pre-wrap">${post.content}</p>
+                        <div class="flex items-center justify-between text-xs text-gray-400 border-t pt-3 mt-2">
+                            <div class="flex items-center gap-1">
+                                <i data-lucide="calendar" style="width: 12px; height: 12px;"></i>
+                                <span>${post.date}</span>
+                            </div>
+                            <button class="flex items-center gap-1 hover:text-purple-600 transition-colors">
+                                <i data-lucide="share-2" style="width: 12px; height: 12px;"></i>
+                                <span>Paylaş</span>
+                            </button>
+                        </div>
+                    </article>
+                `).join('');
+            }
+            // İkonları tekrar oluştur çünkü HTML değişti
+            lucide.createIcons();
+        }
+
+        // --- OLAY YÖNETİMİ ---
+        function toggleModal(modalId, show) {
+            const modal = document.getElementById(modalId);
+            if (show) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function handleAddPost(event) {
+            event.preventDefault();
+            const titleInput = document.getElementById('newTitle');
+            const contentInput = document.getElementById('newContent');
+
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
+
+            if (!title || !content) return;
+
+            const newPost = {
+                id: Date.now(),
+                title: title,
+                content: content,
+                date: new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }),
+                likes: 0
+            };
+
+            posts.unshift(newPost); // Başa ekle
+            
+            // Formu temizle ve modalı kapat
+            titleInput.value = '';
+            contentInput.value = '';
+            toggleModal('addPostModal', false);
+            
+            // Yeniden render et
+            renderPosts();
+        }
+
+        function handleDeletePost(id) {
+            if(confirm("Bu yazıyı silmek istediğinize emin misiniz?")) {
+                posts = posts.filter(post => post.id !== id);
+                renderPosts();
+            }
+        }
+
+        function copyToClipboard(button, elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const iconSpan = button.querySelector('.btn-icon');
+                const textSpan = button.querySelector('.btn-text');
+                
+                // Orijinal durumu sakla
+                const originalIconHTML = iconSpan.innerHTML;
+                const originalText = textSpan.innerText;
+
+                // Değiştir
+                iconSpan.innerHTML = '<i data-lucide="check" class="text-green-400" style="width: 12px; height: 12px;"></i>';
+                textSpan.innerText = "Kopyalandı";
+                lucide.createIcons(); // Yeni ikonu oluştur
+
+                // Geri al
+                setTimeout(() => {
+                    iconSpan.innerHTML = originalIconHTML;
+                    textSpan.innerText = originalText;
+                    lucide.createIcons();
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
