@@ -275,6 +275,96 @@ The result should feel like a genuine behind-the-scenes video montage.</div>
         </div>
     </div>
 
+     <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="code-2" class="text-purple-400"></i>
+                    Ünlü Oyuncularla Film Setleri
+                </h3>
+                <button 
+                    onclick="toggleModal('projectModal', false)" 
+                    class="text-gray-400 hover:text-white bg-gray-800 hover:bg-gray-700 p-2 rounded-full transition-colors"
+                >
+                    <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+                </button>
+            </div>
+            
+            <!-- Content -->
+            <div class="p-6 space-y-8 overflow-y-auto max-h-[70vh]">
+                
+                <!-- Google Gemini Prompt -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-purple-300 font-semibold flex items-center gap-2">
+                            <i data-lucide="zap" style="width: 18px; height: 18px;"></i> Google Gemini Prompt
+                        </h4>
+                        <button 
+                            onclick="copyToClipboard(this, 'geminiText')"
+                            class="flex items-center gap-1 text-xs bg-gray-800 text-gray-300 px-3 py-1 rounded hover:bg-gray-700 transition-colors border border-gray-600"
+                        >
+                            <span class="btn-icon"><i data-lucide="copy" style="width: 12px; height: 12px;"></i></span>
+                            <span class="btn-text">Kopyala</span>
+                        </button>
+                    </div>
+                    <div id="geminiText" class="bg-gray-800 p-4 rounded-lg border border-gray-700 text-gray-300 text-sm leading-relaxed whitespace-pre-wrap font-mono relative group">Yüklediğim fotoğraftaki kişiyi referans al.
+Bu kişi, [Oyuncu İsmi] ile birlikte [Flim ve Dizi ] setinde selfie çekiyormuş gibi görünsün.
+
+Kamera önden tutulmuş olsun, kol hafif öne uzanmış klasik selfie açısı olsun.
+İki kişi kadrajda yakın planda yer alsın.
+İfadeler doğal, samimi ve eğlenceli olsun; gerçek bir set arası selfie hissi versin.
+
+Arka planda [Flim veya Dizi]’nın çekim seti net şekilde görülsün.
+Set ekipmanları, ışıklar ve mekan filmin atmosferine birebir uygun olsun.
+
+Yüz hatları kesinlikle bozulmasın.
+Özellikle referans fotoğraftaki kişinin yüzü birebir korunsun.
+Ünlü oyuncu gerçekçi ve tanınabilir olsun.
+
+Profesyonel sinema ışıklandırması, doğal renkler, ultra gerçekçi, yüksek çözünürlük.
+Fotoğraf gerçek bir kamera ile çekilmiş gibi görünsün.</div>
+                </div>
+
+                <!-- Kling AI Prompt -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-indigo-300 font-semibold flex items-center gap-2">
+                            <i data-lucide="layers" style="width: 18px; height: 18px;"></i> Kling AI Prompt
+                        </h4>
+                        <button 
+                            onclick="copyToClipboard(this, 'klingText')"
+                            class="flex items-center gap-1 text-xs bg-gray-800 text-gray-300 px-3 py-1 rounded hover:bg-gray-700 transition-colors border border-gray-600"
+                        >
+                            <span class="btn-icon"><i data-lucide="copy" style="width: 12px; height: 12px;"></i></span>
+                            <span class="btn-text">Kopyala</span>
+                        </button>
+                    </div>
+                    <div id="klingText" class="bg-gray-800 p-4 rounded-lg border border-gray-700 text-gray-300 text-sm leading-relaxed whitespace-pre-wrap font-mono">Create a hyper-realistic cinematic image-to-video sequence using the uploaded start image as the opening frame and the uploaded end image as the final frame.
+The user remains exactly the same as in both images, with identical face, outfit, hairstyle, and appearance.
+Do not change, redesign, stylize, or alter the user in any way.
+
+The video shows the user moving quickly between two different movie sets, as if walking briskly or lightly running behind the scenes to take photos with different characters.
+The movement feels natural, energetic, and realistic, like a real behind-the-scenes moment captured between takes.
+The transition between the two images happens through a fast handheld walking motion, passing through film set corridors, lighting equipment, cables, and crew silhouettes.
+
+Use subtle motion blur and a brief whip-pan effect to transition smoothly from the first set to the second set.
+The final frame naturally resolves into the end image, as if the user has just arrived at the next set and taken another candid selfie.
+The entire video should look like it was recorded on a modern smartphone:
+
+• handheld camera feel
+• realistic motion
+• natural facial expressions
+• lifelike skin texture
+• cinematic lighting
+• shallow depth of field
+• slight lens glare
+
+The environment clearly feels like real film sets, not fictional renders, with professional equipment visible in the background.
+Keep the video smooth, realistic, and cinematic.
+No exaggerated motion. No fantasy effects.
+The result should feel like a genuine behind-the-scenes video montage.</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
     <!-- JavaScript Logic -->
     <script>
         // --- VERİLER ---
