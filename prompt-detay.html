@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title id="pageTitle">Prompt Detayı | Erkan Demirci</title>
+<meta name="description" id="pageDesc" content="" />
+<link rel="canonical" id="pageCanonical" href="prompt-detay.html" />
+<meta property="og:title" id="ogTitle" content="" />
+<meta property="og:image" content="assets/images/erkan-og.jpg" />
+<link rel="icon" type="image/jpeg" href="assets/images/erkan-avatar.jpg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<a href="#main" class="skip-link">İçeriğe geç</a>
+<div id="site-header"></div>
+
+<main id="main">
+  <div id="promptContent"></div>
+  <div id="notFound" style="display:none;">
+    <section class="page-header text-center">
+      <div class="container">
+        <h1>Prompt Bulunamadı</h1>
+        <p class="lede mt-16" style="margin:0 auto;">Aradığın prompt kaldırılmış veya taşınmış olabilir.</p>
+        <a href="prompt-kutuphanesi.html" class="btn btn-primary mt-24">Kütüphaneye Dön</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="assets/data/site-config.js"></script>
+<script src="assets/data/projects.js"></script>
+<script src="assets/data/posts.js"></script>
+<script src="assets/data/prompts.js"></script>
+<script src="assets/data/documents.js"></script>
+<script src="assets/js/content.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/partials.js"></script>
+<script>
+  const slug = Content.getQueryParam("slug");
+  const pr = PROMPTS.find(p => p.slug === slug);
+  const diffClass = { "Kolay": "diff-kolay", "Orta": "diff-orta", "Zor": "diff-zor" };
+
+  if (!pr) {
+    document.getElementById("notFound").style.display = "block";
+  } else {
+    document.getElementById("pageTitle").textContent = pr.title + " | Erkan Demirci";
+    document.getElementById("pageDesc").setAttribute("content", pr.excerpt);
+    document.getElementById("ogTitle").setAttribute("content", pr.title);
+    document.getElementById("pageCanonical").setAttribute("href", "prompt-detay.html?slug=" + encodeURIComponent(pr.slug));
+
+    const hasPreview = pr.beforeImage || pr.afterImage;
+    const related = PROMPTS.filter(p => p.slug !== pr.slug && p.category === pr.category).slice(0, 3);
+
+    document.getElementById("promptContent").innerHTML = `
+      <section class="page-header">
+        <div class="container">
+          <div class="breadcrumb reveal in"><a href="index.html">Ana Sayfa</a> / <a href="prompt-kutuphanesi.html">Prompt Kütüphanesi</a> / ${Content.escapeHtml(pr.category)}</div>
+          <div class="flex gap-12 items-center mb-16 reveal in">
+            <span class="ai-chip">${Content.escapeHtml(pr.ai)}</span>
+            <span class="diff-chip ${diffClass[pr.difficulty]||''}">${Content.escapeHtml(pr.difficulty)}</span>
+            <span class="mini-tag">${Content.escapeHtml(pr.category)}</span>
+          </div>
+          <h1 class="reveal in" style="max-width:820px;">${Content.escapeHtml(pr.title)}</h1>
+        </div>
+      </section>
+
+      <section class="section-tight">
+        <div class="container">
+          <div class="grid" style="grid-template-columns: 2.2fr 1fr; gap:56px; align-items:flex-start;">
+            <div class="reveal in">
+
+              ${hasPreview ? `
+                <h3 style="margin-bottom:14px;">Önce / Sonra</h3>
+                <div class="before-after">
+                  <div class="ba-item">${pr.beforeImage ? `<img src="${pr.beforeImage}" alt="Önce" />` : `<div class="ph-cover" style="aspect-ratio:1/1;"><span>Önce</span></div>`}<span class="ba-label">ÖNCE</span></div>
+                  <div class="ba-item">${pr.afterImage ? `<img src="${pr.afterImage}" alt="Sonra" />` : `<div class="ph-cover" style="aspect-ratio:1/1;"><span>Sonra</span></div>`}<span class="ba-label">SONRA</span></div>
+                </div>
+              ` : `
+                <div class="ph-cover" style="aspect-ratio:16/9; border-radius:var(--radius-lg); margin-bottom:32px;"><span>Sonuç Görseli — yakında</span></div>
+              `}
+
+              <div class="flex justify-between items-center mb-16" style="flex-wrap:wrap; gap:12px;">
+                <h3 style="margin:0;">Prompt</h3>
+                <button class="copy-btn" id="copyBtn">Promptu Kopyala</button>
+              </div>
+              <div class="prompt-full">${Content.escapeHtml(pr.promptText)}</div>
+
+              <div class="divider"></div>
+              <div class="tag-cloud">
+                ${(pr.tags||[]).map(t => `<a class="tag-pill" href="prompt-kutuphanesi.html?tag=${encodeURIComponent(t)}">#${Content.escapeHtml(t)}</a>`).join("")}
+              </div>
+            </div>
+
+            <aside class="reveal in">
+              <div class="card mb-16">
+                <h3 style="font-size:1rem; margin-bottom:16px;">Detaylar</h3>
+                <div class="meta-panel">
+                  <div class="meta-box"><div class="meta-label">Kullanılan AI</div><div class="meta-value">${Content.escapeHtml(pr.ai)}</div></div>
+                  <div class="meta-box"><div class="meta-label">Kategori</div><div class="meta-value">${Content.escapeHtml(pr.category)}</div></div>
+                  <div class="meta-box"><div class="meta-label">Zorluk</div><div class="meta-value">${Content.escapeHtml(pr.difficulty)}</div></div>
+                  <div class="meta-box" style="grid-column:1/-1;"><div class="meta-label">Amaç</div><div class="meta-value" style="font-weight:500; font-size:0.9rem;">${Content.escapeHtml(pr.purpose)}</div></div>
+                </div>
+              </div>
+              ${related.length ? `
+              <div class="card">
+                <h3 style="font-size:1rem; margin-bottom:16px;">Benzer Promptlar</h3>
+                <div style="display:flex; flex-direction:column; gap:14px;">
+                  ${related.map(p => `
+                    <a href="prompt-detay.html?slug=${encodeURIComponent(p.slug)}" style="display:block; padding:12px; border-radius:12px; border:1px solid var(--c-border);">
+                      <div class="post-meta" style="margin-bottom:4px;"><span class="cat">${Content.escapeHtml(p.ai)}</span></div>
+                      <div style="font-size:0.9rem; font-weight:600;">${Content.escapeHtml(p.title)}</div>
+                    </a>
+                  `).join("")}
+                </div>
+              </div>` : ``}
+              <a href="prompt-kutuphanesi.html" class="btn btn-secondary btn-block mt-16">Tüm Promptlar</a>
+            </aside>
+          </div>
+        </div>
+      </section>
+    `;
+
+    document.getElementById("copyBtn").addEventListener("click", function () {
+      copyToClipboard(pr.promptText, this);
+    });
+  }
+</script>
+</body>
+</html>

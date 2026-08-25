@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Blog | Erkan Demirci</title>
+<meta name="description" content="Yapay zekâ, yazılım, robotik kodlama, 3D tasarım ve içerik üretimi üzerine yazılar." />
+<link rel="canonical" href="blog.html" />
+<meta property="og:title" content="Blog | Erkan Demirci" />
+<meta property="og:image" content="assets/images/erkan-og.jpg" />
+<link rel="icon" type="image/jpeg" href="assets/images/erkan-avatar.jpg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<a href="#main" class="skip-link">İçeriğe geç</a>
+<div id="site-header"></div>
+
+<main id="main">
+  <section class="page-header">
+    <div class="container">
+      <div class="breadcrumb reveal in"><a href="index.html">Ana Sayfa</a> / Blog</div>
+      <div class="eyebrow reveal in">Blog</div>
+      <h1 class="reveal in">Öğrendiklerimi Paylaşıyorum</h1>
+      <p class="lede reveal in mt-16">Öğrendiklerimi, denediklerimi ve ürettiklerimi burada paylaşıyorum.</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container">
+      <div class="search-box reveal in">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="blogSearch" placeholder="Yazılarda ara... (örn. Gemini, robotik, prompt)" />
+      </div>
+      <div class="filter-bar reveal in" id="filterBar"></div>
+      <div class="grid grid-3" id="postsGrid"></div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="assets/data/site-config.js"></script>
+<script src="assets/data/projects.js"></script>
+<script src="assets/data/posts.js"></script>
+<script src="assets/data/prompts.js"></script>
+<script src="assets/data/documents.js"></script>
+<script src="assets/js/content.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/partials.js"></script>
+<script>
+  const CATS = ["Tümü", ...Array.from(new Set(POSTS.map(p => p.category)))];
+  let activeCat = "Tümü";
+  let query = "";
+
+  // ?tag= destek
+  const tagParam = Content.getQueryParam("tag");
+  if (tagParam) query = tagParam;
+
+  function renderFilters() {
+    document.getElementById("filterBar").innerHTML = CATS.map(c => `
+      <button class="filter-btn ${c === activeCat ? 'active' : ''}" data-cat="${c}">${c}</button>
+    `).join("");
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+      btn.addEventListener("click", () => { activeCat = btn.getAttribute("data-cat"); renderFilters(); renderGrid(); });
+    });
+  }
+
+  function renderGrid() {
+    let list = activeCat === "Tümü" ? POSTS : POSTS.filter(p => p.category === activeCat);
+    if (query) {
+      const q = query.toLowerCase();
+      list = list.filter(p => (p.title + p.excerpt + p.category + (p.tags||[]).join(" ")).toLowerCase().includes(q));
+    }
+    const grid = document.getElementById("postsGrid");
+    grid.innerHTML = list.length ? list.map(Content.postCardHtml).join("") : Content.emptyStateHtml("Aramanızla eşleşen bir yazı bulunamadı.");
+  }
+
+  document.getElementById("blogSearch").value = query;
+  document.getElementById("blogSearch").addEventListener("input", (e) => { query = e.target.value; renderGrid(); });
+
+  renderFilters();
+  renderGrid();
+</script>
+</body>
+</html>

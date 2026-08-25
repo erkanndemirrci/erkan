@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI Gallery | Erkan Demirci</title>
+<meta name="description" content="Yapay zekâ ile ürettiğim görseller ve videolardan oluşan galeri." />
+<link rel="canonical" href="ai-gallery.html" />
+<meta property="og:title" content="AI Gallery | Erkan Demirci" />
+<meta property="og:image" content="assets/images/erkan-og.jpg" />
+<link rel="icon" type="image/jpeg" href="assets/images/erkan-avatar.jpg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<a href="#main" class="skip-link">İçeriğe geç</a>
+<div id="site-header"></div>
+
+<main id="main">
+  <section class="page-header">
+    <div class="container">
+      <div class="breadcrumb reveal in"><a href="index.html">Ana Sayfa</a> / AI Gallery</div>
+      <div class="eyebrow reveal in">AI Gallery</div>
+      <h1 class="reveal in">Yapay Zekâ ile Ürettiklerim</h1>
+      <p class="lede reveal in mt-16">Görsel, video, reklam, portre, ürün ve deneysel üretimlerden bir seçki.</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container">
+      <div class="filter-bar reveal in" id="filterBar"></div>
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="assets/data/site-config.js"></script>
+<script src="assets/data/projects.js"></script>
+<script src="assets/data/posts.js"></script>
+<script src="assets/data/prompts.js"></script>
+<script src="assets/data/documents.js"></script>
+<script src="assets/data/gallery.js"></script>
+<script src="assets/js/content.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/partials.js"></script>
+<script>
+  const CATS = ["Tümü", "Görsel", "Video", "Reklam", "Portre", "Ürün", "Sosyal Medya", "Deneysel"];
+  let activeCat = "Tümü";
+
+  function renderFilters() {
+    document.getElementById("filterBar").innerHTML = CATS.map(c => `
+      <button class="filter-btn ${c === activeCat ? 'active' : ''}" data-cat="${c}">${c}</button>
+    `).join("");
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+      btn.addEventListener("click", () => { activeCat = btn.getAttribute("data-cat"); renderFilters(); renderGrid(); });
+    });
+  }
+
+  function renderGrid() {
+    const list = activeCat === "Tümü" ? GALLERY : GALLERY.filter(g => g.type === activeCat);
+    const grid = document.getElementById("galleryGrid");
+    grid.innerHTML = list.length ? list.map(Content.galleryItemHtml).join("") : Content.emptyStateHtml("Bu kategoride henüz içerik yok.");
+  }
+
+  renderFilters();
+  renderGrid();
+</script>
+</body>
+</html>

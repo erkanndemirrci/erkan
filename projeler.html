@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Projeler | Erkan Demirci</title>
+<meta name="description" content="Erkan Demirci'nin yazılım, yapay zekâ, eğitim, robotik ve 3D tasarım alanlarındaki projeleri." />
+<link rel="canonical" href="projeler.html" />
+<meta property="og:title" content="Projeler | Erkan Demirci" />
+<meta property="og:image" content="assets/images/erkan-og.jpg" />
+<link rel="icon" type="image/jpeg" href="assets/images/erkan-avatar.jpg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<a href="#main" class="skip-link">İçeriğe geç</a>
+<div id="site-header"></div>
+
+<main id="main">
+  <section class="page-header">
+    <div class="container">
+      <div class="breadcrumb reveal in"><a href="index.html">Ana Sayfa</a> / Projeler</div>
+      <div class="eyebrow reveal in">Portfolyo</div>
+      <h1 class="reveal in">Ürettiklerim</h1>
+      <p class="lede reveal in mt-16">Yazılım, yapay zekâ, eğitim, robotik ve 3D tasarım alanlarında hayata geçirdiğim projeler.</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container">
+      <div class="filter-bar reveal" id="filterBar"></div>
+      <div class="grid grid-3" id="projectsGrid"></div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="assets/data/site-config.js"></script>
+<script src="assets/data/projects.js"></script>
+<script src="assets/data/posts.js"></script>
+<script src="assets/data/prompts.js"></script>
+<script src="assets/data/documents.js"></script>
+<script src="assets/js/content.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/partials.js"></script>
+<script>
+  const CATS = ["Tümü", "Yazılım", "AI", "Eğitim", "Robotik", "3D"];
+  let activeCat = "Tümü";
+
+  function renderFilters() {
+    document.getElementById("filterBar").innerHTML = CATS.map(c => `
+      <button class="filter-btn ${c === activeCat ? 'active' : ''}" data-cat="${c}">${c}</button>
+    `).join("");
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+      btn.addEventListener("click", () => { activeCat = btn.getAttribute("data-cat"); renderFilters(); renderGrid(); });
+    });
+  }
+
+  function renderGrid() {
+    const list = activeCat === "Tümü" ? PROJECTS : PROJECTS.filter(p => p.category === activeCat);
+    const grid = document.getElementById("projectsGrid");
+    grid.innerHTML = list.length ? list.map(Content.projectCardHtml).join("") : Content.emptyStateHtml("Bu kategoride henüz proje yok.");
+  }
+
+  renderFilters();
+  renderGrid();
+</script>
+</body>
+</html>

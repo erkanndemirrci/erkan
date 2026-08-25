@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>İletişim | Erkan Demirci</title>
+<meta name="description" content="Bir proje, eğitim veya yapay zekâ çalışması hakkında Erkan Demirci ile iletişime geç." />
+<link rel="canonical" href="iletisim.html" />
+<meta property="og:title" content="İletişim | Erkan Demirci" />
+<meta property="og:image" content="assets/images/erkan-og.jpg" />
+<link rel="icon" type="image/jpeg" href="assets/images/erkan-avatar.jpg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<a href="#main" class="skip-link">İçeriğe geç</a>
+<div id="site-header"></div>
+
+<main id="main">
+  <section class="page-header">
+    <div class="container">
+      <div class="breadcrumb reveal in"><a href="index.html">Ana Sayfa</a> / İletişim</div>
+      <div class="eyebrow reveal in">İletişim</div>
+      <h1 class="reveal in">Birlikte Bir Şey Üretelim.</h1>
+      <p class="lede reveal in mt-16">Bir proje, eğitim, yapay zekâ çalışması veya yaratıcı bir fikir hakkında konuşmak istersen benimle iletişime geçebilirsin.</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container">
+      <div class="grid" style="grid-template-columns:1.3fr 1fr; gap:56px; align-items:flex-start;">
+        <form class="card reveal in" id="contactForm">
+          <div class="form-grid">
+            <div class="field">
+              <label for="fullName">Ad Soyad</label>
+              <input type="text" id="fullName" name="fullName" required placeholder="Adın Soyadın" />
+            </div>
+            <div class="field">
+              <label for="email">E-posta</label>
+              <input type="email" id="email" name="email" required placeholder="ornek@eposta.com" />
+            </div>
+            <div class="field full">
+              <label for="subject">Konu</label>
+              <input type="text" id="subject" name="subject" required placeholder="Örn. Proje işbirliği" />
+            </div>
+            <div class="field full">
+              <label for="message">Mesaj</label>
+              <textarea id="message" name="message" required placeholder="Mesajını buraya yaz..."></textarea>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block mt-24">Mesaj Gönder</button>
+          <p class="text-faint mt-16" style="font-size:0.8rem;">* Bu form, gönder butonuna basıldığında varsayılan e-posta uygulamanı açar. İstersen ileride Formspree / EmailJS gibi bir servisle doğrudan gönderime bağlanabilir.</p>
+        </form>
+
+        <div class="reveal in">
+          <div class="card mb-16">
+            <h3 style="font-size:1rem; margin-bottom:16px;">İletişim Bilgileri</h3>
+            <p style="font-size:0.9rem;" id="contactEmailText"></p>
+          </div>
+          <div class="card">
+            <h3 style="font-size:1rem; margin-bottom:16px;">Sosyal Medya</h3>
+            <div style="display:flex; flex-direction:column; gap:12px;" id="contactSocials"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="assets/data/site-config.js"></script>
+<script src="assets/js/content.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/data/projects.js"></script>
+<script src="assets/data/posts.js"></script>
+<script src="assets/data/prompts.js"></script>
+<script src="assets/data/documents.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/partials.js"></script>
+<script>
+  document.getElementById("contactEmailText").innerHTML = `<a href="mailto:${SITE_CONFIG.contactEmail}" style="color:var(--c-cyan); font-weight:600;">${SITE_CONFIG.contactEmail}</a>`;
+
+  const socials = Object.values(SITE_CONFIG.socials).filter(s => s.url);
+  document.getElementById("contactSocials").innerHTML = socials.map(s => `
+    <a href="${s.url}" target="_blank" rel="noopener" class="flex items-center gap-12" style="padding:10px; border-radius:12px; border:1px solid var(--c-border);">
+      <span class="icon-btn">${window.socialIcon ? window.socialIcon(s.label) : ''}</span>
+      <span><strong style="display:block; font-size:0.9rem;">${s.label}</strong><span class="text-faint" style="font-size:0.8rem;">${s.handle}</span></span>
+    </a>
+  `).join("");
+
+  document.getElementById("contactForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const name = document.getElementById("fullName").value;
+    const email = document.getElementById("email").value;
+    const subject = document.getElementById("subject").value;
+    const message = document.getElementById("message").value;
+    const body = `Ad Soyad: ${name}\nE-posta: ${email}\n\n${message}`;
+    window.location.href = `mailto:${SITE_CONFIG.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.showToast("E-posta uygulaman açılıyor...");
+  });
+</script>
+</body>
+</html>
