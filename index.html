@@ -1,408 +1,230 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Erkan Demirci | Robotik Kodlama & Yapay Zeka</title>
-
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;
-}
-
-html{
-    scroll-behavior:smooth;
-}
-
-body{
-    background:#080b14;
-    color:#ffffff;
-    overflow-x:hidden;
-    line-height:1.7;
-}
-
-/* Arka Plan */
-body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-    background:
-    radial-gradient(circle at top left,#00c8ff22,transparent 30%),
-    radial-gradient(circle at bottom right,#00ffcc18,transparent 35%),
-    linear-gradient(135deg,#090b12,#111827,#090b12);
-    z-index:-2;
-}
-
-body::after{
-    content:"";
-    position:fixed;
-    inset:0;
-    background-image:
-    linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
-    background-size:40px 40px;
-    z-index:-1;
-}
-
-/* Menü */
-
-header{
-    position:fixed;
-    width:100%;
-    top:0;
-    left:0;
-    background:rgba(8,12,22,.75);
-    backdrop-filter:blur(12px);
-    border-bottom:1px solid rgba(0,255,255,.15);
-    z-index:999;
-}
-
-nav{
-    width:90%;
-    max-width:1200px;
-    margin:auto;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:18px 0;
-}
-
-.logo{
-    font-size:1.4rem;
-    font-weight:bold;
-    color:#00d9ff;
-    letter-spacing:1px;
-}
-
-nav ul{
-    display:flex;
-    list-style:none;
-    gap:25px;
-}
-
-nav a{
-    color:white;
-    text-decoration:none;
-    transition:.3s;
-}
-
-nav a:hover{
-    color:#00d9ff;
-}
-
-/* Hero */
-
-.hero{
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    padding:120px 20px 80px;
-}
-
-.hero-content{
-    max-width:850px;
-}
-
-.hero h1{
-    font-size:clamp(2.6rem,6vw,4.5rem);
-    margin-bottom:15px;
-    text-shadow:0 0 18px #00d9ff;
-}
-
-.hero h2{
-    color:#00d9ff;
-    font-weight:400;
-    margin-bottom:25px;
-    font-size:clamp(1.1rem,3vw,1.6rem);
-}
-
-.hero p{
-    color:#cfd8e3;
-    font-size:1.05rem;
-    margin-bottom:40px;
-}
-
-.buttons{
-    display:flex;
-    justify-content:center;
-    gap:18px;
-    flex-wrap:wrap;
-}
-
-.btn{
-    text-decoration:none;
-    padding:15px 30px;
-    border-radius:40px;
-    transition:.35s;
-    font-weight:bold;
-}
-
-.primary{
-    background:#00d9ff;
-    color:#081018;
-    box-shadow:0 0 20px #00d9ff66;
-}
-
-.primary:hover{
-    transform:translateY(-4px);
-    box-shadow:0 0 30px #00d9ffaa;
-}
-
-.secondary{
-    border:2px solid #00d9ff;
-    color:#00d9ff;
-}
-
-.secondary:hover{
-    background:#00d9ff;
-    color:#081018;
-}
-
-/* Bölümler */
-
-section{
-    width:90%;
-    max-width:1100px;
-    margin:auto;
-    padding:90px 0;
-}
-
-.section-title{
-    text-align:center;
-    margin-bottom:45px;
-}
-
-.section-title h2{
-    font-size:2.2rem;
-    color:#00d9ff;
-}
-
-.card{
-    background:rgba(255,255,255,.05);
-    border:1px solid rgba(0,217,255,.2);
-    border-radius:18px;
-    padding:35px;
-    backdrop-filter:blur(8px);
-    transition:.35s;
-}
-
-.card:hover{
-    transform:translateY(-6px);
-    box-shadow:0 0 30px rgba(0,217,255,.25);
-}
-
-.about{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:30px;
-}
-
-.box{
-    background:rgba(255,255,255,.04);
-    border-radius:15px;
-    padding:25px;
-    border:1px solid rgba(255,255,255,.08);
-}
-
-.box h3{
-    color:#00d9ff;
-    margin-bottom:15px;
-}
-
-.social{
-    display:flex;
-    justify-content:center;
-    gap:25px;
-    flex-wrap:wrap;
-    margin-top:25px;
-}
-
-.social a{
-    text-decoration:none;
-    color:white;
-    padding:18px 30px;
-    border-radius:15px;
-    min-width:220px;
-    text-align:center;
-    transition:.35s;
-    font-size:1.05rem;
-    font-weight:bold;
-}
-
-.youtube{
-    background:#ff0000;
-}
-
-.instagram{
-    background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af,#515bd4);
-}
-
-.social a:hover{
-    transform:translateY(-5px) scale(1.04);
-    box-shadow:0 0 20px rgba(255,255,255,.25);
-}
-
-footer{
-    text-align:center;
-    padding:35px;
-    color:#b5c1d1;
-    border-top:1px solid rgba(255,255,255,.08);
-    margin-top:40px;
-}
-
-.highlight{
-    color:#00d9ff;
-    font-weight:bold;
-}
-
-@media(max-width:800px){
-
-nav{
-flex-direction:column;
-gap:15px;
-}
-
-nav ul{
-flex-wrap:wrap;
-justify-content:center;
-}
-
-.about{
-grid-template-columns:1fr;
-}
-
-.hero{
-padding-top:170px;
-}
-
-}
-</style>
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Erkan Demirci | Teknoloji, Yapay Zekâ ve Eğitim</title>
+<meta name="description" content="Erkan Demirci — robotik kodlama, 3D tasarım, yazılım ve yapay zekâ alanlarında üretiyor; projelerini, bloglarını, AI promptlarını ve dokümanlarını tek platformda paylaşıyor." />
+<meta name="keywords" content="Erkan Demirci, yapay zekâ, robotik kodlama, prompt engineering, AI content creator, 3D tasarım, yazılım eğitimi" />
+<link rel="canonical" href="index.html" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Erkan Demirci | Teknoloji, Yapay Zekâ ve Eğitim" />
+<meta property="og:description" content="Teknoloji, yapay zekâ ve eğitimle üretiyorum. Projeler, blog, AI prompt kütüphanesi ve doküman arşivi." />
+<meta property="og:image" content="assets/images/erkan-og.jpg" />
+<link rel="icon" type="image/jpeg" href="assets/images/erkan-avatar.jpg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
+<a href="#main" class="skip-link">İçeriğe geç</a>
+<div id="site-header"></div>
 
-<header>
-<nav>
+<main id="main">
 
-<div class="logo">ERKAN DEMİRCİ</div>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="reveal in">
+        <div class="hero-kicker">ERKAN DEMİRCİ</div>
+        <h1 id="heroTitle">Teknoloji, Yapay Zekâ ve <span class="text-gradient">Eğitimle Üretiyorum.</span></h1>
+        <p class="lede" id="heroSubtitle">Robotik kodlama, 3D tasarım, yazılım ve yapay zekâ alanlarında üretiyor; öğrendiklerimi içerikler, projeler ve rehberlerle paylaşıyorum.</p>
+        <div class="hero-ctas">
+          <a href="projeler.html" class="btn btn-primary">Projelerimi Gör</a>
+          <a href="blog.html" class="btn btn-secondary">Blogu Keşfet</a>
+        </div>
+        <div class="hero-tags">
+          <a href="prompt-kutuphanesi.html" class="hero-tag">→ Prompt Kütüphanesi</a>
+          <span class="hero-tag">→ CV'mi Gör</span>
+        </div>
+      </div>
+      <div class="hero-visual" data-particles>
+        <div class="hero-glow g1"></div>
+        <div class="hero-glow g2"></div>
+        <div class="hero-photo-wrap">
+          <img src="assets/images/erkan-hero.jpg" alt="Erkan Demirci" />
+        </div>
+        <div class="hero-orbit-badge">
+          <span class="dot"></span>
+          <span><strong>AI Content Creator</strong> · Robotik · 3D · Yazılım</span>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<ul>
-<li><a href="#anasayfa">Ana Sayfa</a></li>
-<li><a href="#hakkimda">Hakkımda</a></li>
-<li><a href="#iletisim">Sosyal Medya</a></li>
-</ul>
+  <!-- STATS -->
+  <section class="section-tight">
+    <div class="container">
+      <div class="stats-bar reveal" id="statsBar"></div>
+    </div>
+  </section>
 
-</nav>
-</header>
+  <!-- EXPERTISE SUMMARY -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head center reveal">
+        <div class="eyebrow" style="margin-left:auto;margin-right:auto;">Uzmanlıklarım</div>
+        <h2>Dört alanda üretiyorum,<br/>tek bir kimlikte birleştiriyorum.</h2>
+      </div>
+      <div class="grid grid-4">
+        <div class="card expertise-card reveal">
+          <div class="expertise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="2"/><path d="M9 3v4M15 3v4M8 13h.01M16 13h.01M9 17h6"/></svg></div>
+          <h3>Robotik Kodlama</h3>
+          <p>Robotik sistemler, programlama ve STEM tabanlı eğitim.</p>
+        </div>
+        <div class="card expertise-card reveal">
+          <div class="expertise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/></svg></div>
+          <h3>3D Tasarım</h3>
+          <p>3D modelleme, tasarım ve dijital üretim.</p>
+        </div>
+        <div class="card expertise-card reveal">
+          <div class="expertise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2a5 5 0 0 1 5 5c0 2-1 3-2 4s-1 2-1 3H10c0-1 0-2-1-3s-2-2-2-4a5 5 0 0 1 5-5Z"/><path d="M10 18h4M9 21h6"/></svg></div>
+          <h3>Yapay Zekâ</h3>
+          <p>Generative AI, prompt engineering, AI araçları ve otomasyon.</p>
+        </div>
+        <div class="card expertise-card featured reveal">
+          <div class="expertise-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg></div>
+          <h3>AI Content Creator</h3>
+          <p>Görsel, video, reklam, sosyal medya, hikâye ve animasyon üretimi.</p>
+        </div>
+      </div>
+      <div class="text-center mt-40 reveal">
+        <a href="uzmanliklarim.html" class="btn-ghost">Tüm uzmanlıkları incele
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
 
-<section class="hero" id="anasayfa">
+  <!-- AI CONTENT CREATOR PREMIUM -->
+  <section class="section" style="background:linear-gradient(180deg, transparent, rgba(22,119,255,0.05), transparent);">
+    <div class="container">
+      <div class="grid grid-2" style="align-items:center; gap:56px;">
+        <div class="reveal">
+          <div class="eyebrow">AI Content Creator</div>
+          <h2>Yapay Zekâ ile <span class="text-gradient">Üretiyorum.</span></h2>
+          <p class="lede mt-16">AI görsel ve video üretimi, prompt engineering, reklam içerikleri, sosyal medya içerikleri, AI karakterler, animasyonlar, hikâyeler ve dijital kampanyalar üzerine çalışıyorum.</p>
+          <div class="tools-strip mt-24" id="toolsStrip"></div>
+          <div class="hero-ctas mt-24">
+            <a href="ai-gallery.html" class="btn btn-primary">AI Gallery'yi Gör</a>
+            <a href="prompt-kutuphanesi.html" class="btn btn-secondary">Promptları İncele</a>
+          </div>
+        </div>
+        <div class="reveal">
+          <div class="grid grid-2" style="gap:16px;">
+            <div class="ph-cover" style="aspect-ratio:3/4; border-radius:20px; border:1px solid var(--c-border-strong);"><span>AI Görsel</span></div>
+            <div class="ph-cover" style="aspect-ratio:3/4; border-radius:20px; border:1px solid var(--c-border-strong); margin-top:32px;"><span>AI Video</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<div class="hero-content">
+  <!-- FEATURED PROJECTS -->
+  <section class="section">
+    <div class="container">
+      <div class="flex justify-between items-center mb-24 reveal" style="flex-wrap:wrap; gap:16px;">
+        <div class="section-head" style="margin-bottom:0;">
+          <div class="eyebrow">Ürettiklerim</div>
+          <h2>Öne Çıkan Projeler</h2>
+        </div>
+        <a href="projeler.html" class="btn-ghost">Tüm projeler
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div class="grid grid-3" id="featuredProjects"></div>
+    </div>
+  </section>
 
-<h1>Erkan Demirci</h1>
+  <!-- LATEST BLOG -->
+  <section class="section">
+    <div class="container">
+      <div class="flex justify-between items-center mb-24 reveal" style="flex-wrap:wrap; gap:16px;">
+        <div class="section-head" style="margin-bottom:0;">
+          <div class="eyebrow">Blog</div>
+          <h2>Son Blog Yazıları</h2>
+        </div>
+        <a href="blog.html" class="btn-ghost">Blogu keşfet
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div class="grid grid-3" id="latestPosts"></div>
+    </div>
+  </section>
 
-<h2>🤖 Robotik Kodlama Öğretmeni <br>🧠 YouTube Yapay Zeka İçerik Üreticisi</h2>
+  <!-- POPULAR PROMPTS -->
+  <section class="section">
+    <div class="container">
+      <div class="flex justify-between items-center mb-24 reveal" style="flex-wrap:wrap; gap:16px;">
+        <div class="section-head" style="margin-bottom:0;">
+          <div class="eyebrow">Prompt Kütüphanesi</div>
+          <h2>Popüler Promptlar</h2>
+        </div>
+        <a href="prompt-kutuphanesi.html" class="btn-ghost">Kütüphaneyi aç
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div class="grid grid-3" id="popularPrompts"></div>
+    </div>
+  </section>
 
-<p>
-Robotik, kodlama ve yapay zekâ teknolojilerini anlaşılır ve uygulamalı şekilde
-öğreten içerikler üretiyorum. Geleceğin teknolojilerini keşfetmek isteyen
-öğrenciler ve teknoloji meraklıları için eğitimler hazırlıyor, üretmeye ve
-öğrenmeye devam ediyorum.
-</p>
+  <!-- NEW DOCUMENTS -->
+  <section class="section">
+    <div class="container">
+      <div class="flex justify-between items-center mb-24 reveal" style="flex-wrap:wrap; gap:16px;">
+        <div class="section-head" style="margin-bottom:0;">
+          <div class="eyebrow">Dokümanlar</div>
+          <h2>Yeni Dokümanlar</h2>
+        </div>
+        <a href="dokumanlar.html" class="btn-ghost">Tüm dokümanlar
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div class="grid grid-2" id="newDocuments"></div>
+    </div>
+  </section>
 
-<div class="buttons">
+  <!-- CONTACT TEASER -->
+  <section class="section">
+    <div class="container">
+      <div class="card reveal" style="padding:56px; text-align:center; background:var(--gradient-brand-soft); border-color:var(--c-border-strong);">
+        <h2 class="mb-16">Birlikte Bir Şey Üretelim.</h2>
+        <p class="lede" style="margin:0 auto 32px;">Bir proje, eğitim, yapay zekâ çalışması veya yaratıcı bir fikir hakkında konuşmak istersen benimle iletişime geçebilirsin.</p>
+        <a href="iletisim.html" class="btn btn-primary">Mesaj Gönder</a>
+      </div>
+    </div>
+  </section>
 
-<a href="#hakkimda" class="btn primary">
-Hakkımda
-</a>
+</main>
 
-<a href="#iletisim" class="btn secondary">
-Sosyal Medya
-</a>
+<div id="site-footer"></div>
 
-</div>
+<script src="assets/data/site-config.js"></script>
+<script src="assets/data/projects.js"></script>
+<script src="assets/data/posts.js"></script>
+<script src="assets/data/prompts.js"></script>
+<script src="assets/data/documents.js"></script>
+<script src="assets/data/gallery.js"></script>
+<script src="assets/js/content.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/partials.js"></script>
+<script>
+  document.getElementById("heroSubtitle").textContent = SITE_CONFIG.heroSubtitle;
 
-</div>
+  document.getElementById("statsBar").innerHTML = SITE_CONFIG.stats.map(s => `
+    <div class="stat-item"><div class="stat-num text-gradient">${s.number}</div><div class="stat-label">${s.label}</div></div>
+  `).join("");
 
-</section>
+  document.getElementById("toolsStrip").innerHTML = SITE_CONFIG.tools.map(t => `
+    <span class="tool-chip"><span class="dot" style="background:${t.color}"></span>${t.name}</span>
+  `).join("");
 
-<section id="hakkimda">
-
-<div class="section-title">
-<h2>Hakkımda</h2>
-</div>
-
-<div class="card">
-
-<div class="about">
-
-<div class="box">
-
-<h3>🚀 Robotik Kodlama</h3>
-
-<p>
-Robotik sistemler, algoritma geliştirme, STEM eğitimi ve programlama alanlarında
-öğrencilerin teknolojiyle üretmesini hedefleyen eğitimler veriyorum.
-Kodlama becerilerini gerçek projelerle destekleyerek öğrenmeyi daha eğlenceli ve kalıcı hale getiriyorum.
-</p>
-
-</div>
-
-<div class="box">
-
-<h3>🤖 Yapay Zeka</h3>
-
-<p>
-YouTube kanalımda yapay zekâ araçları, üretken yapay zekâ uygulamaları,
-verimlilik teknolojileri ve dijital içerik üretimi üzerine videolar hazırlıyor,
-teknolojiyi herkes için daha anlaşılır hale getirmeyi amaçlıyorum.
-</p>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-<section id="iletisim">
-
-<div class="section-title">
-<h2>Beni Takip Edin</h2>
-</div>
-
-<div class="social">
-
-<a class="youtube"
-target="_blank"
-href="https://www.youtube.com/channel/UCeXYeofxeDpRiyLXM_iQcDg">
-▶ YouTube Kanalım
-</a>
-
-<a class="instagram"
-target="_blank"
-href="https://www.instagram.com/erkanndemirrci/">
-📷 Instagram
-</a>
-
-</div>
-
-</section>
-
-<footer>
-
-<p>
-© 2026 <span class="highlight">Erkan Demirci</span><br>
-Robotik • Kodlama • Yapay Zeka
-</p>
-
-</footer>
-
+  document.getElementById("featuredProjects").innerHTML = PROJECTS.slice(0, 3).map(Content.projectCardHtml).join("");
+  document.getElementById("latestPosts").innerHTML = POSTS.slice(0, 3).map(Content.postCardHtml).join("");
+  document.getElementById("popularPrompts").innerHTML = PROMPTS.slice(0, 3).map(Content.promptCardHtml).join("");
+  document.getElementById("newDocuments").innerHTML = DOCUMENTS.slice(0, 2).map(Content.docCardHtml).join("");
+</script>
 </body>
 </html>
