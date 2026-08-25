@@ -29,12 +29,16 @@
   function iconSun() {
     return `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>`;
   }
+  function iconUser() {
+    return `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>`;
+  }
 
   function renderHeader() {
     const cfg = window.SITE_CONFIG || {};
     const cur = currentPage();
     const links = NAV_LINKS.map(l => `<a href="${l.href}" class="${cur === l.href ? "active" : ""}">${l.label}</a>`).join("");
-    const mobileLinks = NAV_LINKS.map(l => `<a href="${l.href}" class="${cur === l.href ? "active" : ""}">${l.label}</a>`).join("");
+    const mobileLinks = NAV_LINKS.concat([{ href: "hesap.html", label: "Hesabım" }])
+      .map(l => `<a href="${l.href}" class="${cur === l.href ? "active" : ""}">${l.label}</a>`).join("");
 
     const socials = cfg.socials || {};
     const mobileSocial = Object.values(socials).filter(s => s.url).map(s =>
@@ -52,7 +56,7 @@
           <div class="nav-actions">
             <button class="icon-btn" id="searchTrigger" aria-label="Ara">${iconSearch()}</button>
             <button class="icon-btn" id="themeToggle" aria-label="Tema değiştir">${iconSun()}</button>
-            <a href="iletisim.html" class="btn btn-secondary btn-sm" style="display:none" id="navContactBtn">İletişime Geç</a>
+            <a href="hesap.html" class="icon-btn" aria-label="Hesabım" title="Hesabım">${iconUser()}</a>
             <button class="nav-burger" id="navBurger" aria-label="Menü"><span></span></button>
           </div>
         </div>

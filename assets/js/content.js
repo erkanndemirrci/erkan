@@ -74,7 +74,12 @@
 
   // ---------- PROMPT CARD ----------
   const diffClass = { "Kolay": "diff-kolay", "Orta": "diff-orta", "Zor": "diff-zor" };
+  const planLabel = { FREE: "Ücretsiz", TEMEL: "Temel", PRO: "Pro" };
+  function lockBadgeHtml(requiredPlan) {
+    return `<span class="lock-badge">🔒 ${escapeHtml(planLabel[requiredPlan] || requiredPlan)} üyelere özel</span>`;
+  }
   function promptCardHtml(pr) {
+    const isLocked = !!pr.protected;
     return `
       <article class="card prompt-card reveal in">
         <div class="prompt-card-top">
@@ -82,16 +87,20 @@
             <span class="ai-chip">${escapeHtml(pr.ai)}</span>
             <span class="diff-chip ${diffClass[pr.difficulty]||''}">${escapeHtml(pr.difficulty)}</span>
           </div>
-          <span class="mini-tag">${escapeHtml(pr.category)}</span>
+          ${isLocked ? lockBadgeHtml(pr.requiredPlan) : `<span class="mini-tag">${escapeHtml(pr.category)}</span>`}
         </div>
         <h3><a href="prompt-detay.html?slug=${encodeURIComponent(pr.slug)}">${escapeHtml(pr.title)}</a></h3>
         <p style="font-size:0.9rem;">${escapeHtml(pr.excerpt)}</p>
-        <div class="prompt-preview">${escapeHtml(pr.promptText)}</div>
+        ${isLocked
+          ? `<div class="prompt-preview locked"><span>🔒 Bu promptun tam metni ${escapeHtml(planLabel[pr.requiredPlan] || pr.requiredPlan)} üyelere özeldir.</span></div>`
+          : `<div class="prompt-preview">${escapeHtml(pr.promptText)}</div>`}
         <div class="prompt-card-footer">
           <a href="prompt-detay.html?slug=${encodeURIComponent(pr.slug)}" class="btn-ghost">Detayı Gör
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
           </a>
-          <button class="btn btn-secondary btn-sm" onclick="copyToClipboard(${JSON.stringify(pr.promptText)}, this)">Promptu Kopyala</button>
+          ${isLocked
+            ? `<a href="prompt-detay.html?slug=${encodeURIComponent(pr.slug)}" class="btn btn-primary btn-sm">Kilidi Aç</a>`
+            : `<button class="btn btn-secondary btn-sm" onclick="copyToClipboard(${JSON.stringify(pr.promptText)}, this)">Promptu Kopyala</button>`}
         </div>
       </article>
     `;
@@ -99,17 +108,25 @@
 
   // ---------- DOCUMENT CARD ----------
   function docCardHtml(doc) {
+    const isLocked = !!doc.protected;
     return `
       <article class="card doc-card reveal in">
         <div class="doc-icon">${escapeHtml(doc.fileType)}</div>
         <div class="doc-info">
-          <h3>${escapeHtml(doc.title)}</h3>
+          <div class="flex items-center gap-8" style="flex-wrap:wrap;">
+            <h3 style="margin:0;">${escapeHtml(doc.title)}</h3>
+            ${isLocked ? lockBadgeHtml(doc.requiredPlan) : ``}
+          </div>
           <div class="doc-meta">${escapeHtml(doc.category)} · ${formatDate(doc.date)}</div>
           <p style="font-size:0.9rem;">${escapeHtml(doc.description)}</p>
           <div class="tag-row">${tagPillsHtml(doc.tags)}</div>
           <div class="doc-actions">
-            <a href="${doc.fileUrl}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">Dokümanı Görüntüle</a>
-            <a href="${doc.fileUrl}" download class="btn btn-primary btn-sm">Dokümanı İndir</a>
+            ${isLocked
+              ? `<button class="btn btn-primary btn-sm" data-gated-doc="${escapeHtml(doc.slug)}" data-required-plan="${escapeHtml(doc.requiredPlan)}">🔒 Kilidi Aç / Görüntüle</button>`
+              : `
+                <a href="${doc.fileUrl}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">Dokümanı Görüntüle</a>
+                <a href="${doc.fileUrl}" download class="btn btn-primary btn-sm">Dokümanı İndir</a>
+              `}
           </div>
         </div>
       </article>
@@ -140,7 +157,31 @@
   }
 
   window.Content = {
-    getQueryParam, formatDate, escapeHtml, coverHtml, tagPillsHtml,
+    getQueryParam, formatDate, escapeHtml, coverHtml, tagPillsHtml, lockBadgeHtml, planLabel,
     projectCardHtml, postCardHtml, promptCardHtml, docCardHtml, galleryItemHtml, emptyStateHtml
   };
+
+  // Kilitli doküman butonları için ortak tıklama işleyicisi (dokumanlar.html dahil her sayfada çalışır).
+  document.addEventListener("click", async function (e) {
+    const btn = e.target.closest("[data-gated-doc]");
+    if (!btn || !window.AuthClient) return;
+    const slug = btn.getAttribute("data-gated-doc");
+    const originalText = btn.textContent;
+    btn.textContent = "Kontrol ediliyor...";
+    btn.disabled = true;
+    try {
+      const result = await window.AuthClient.fetchProtectedContent(slug);
+      if (result.allowed && result.content.fileUrl) {
+        window.open(result.content.fileUrl, "_blank", "noopener");
+        btn.textContent = originalText;
+        btn.disabled = false;
+      } else {
+        window.location.href = `hesap.html?upgrade=${encodeURIComponent(result.requiredPlan || "TEMEL")}&next=${encodeURIComponent(window.location.href)}`;
+      }
+    } catch (err) {
+      btn.textContent = originalText;
+      btn.disabled = false;
+      if (window.showToast) window.showToast("Sunucuya ulaşılamadı, lütfen tekrar dene.");
+    }
+  });
 })();

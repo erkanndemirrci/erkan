@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ödeme | Erkan Demirci</title>
+<meta name="robots" content="noindex" />
+<link rel="icon" type="image/jpeg" href="assets/images/erkan-avatar.jpg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<a href="#main" class="skip-link">İçeriğe geç</a>
+<div id="site-header"></div>
+
+<main id="main">
+  <section class="page-header text-center">
+    <div class="container">
+      <div class="eyebrow reveal in" style="margin-left:auto;margin-right:auto;">Güvenli Ödeme</div>
+      <h1 class="reveal in">Ödemeni Tamamla</h1>
+      <p class="lede reveal in mt-16" style="margin:0 auto;">Ödeme işlemin Iyzico'nun güvenli altyapısı üzerinden gerçekleşir.</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container" style="max-width:640px;">
+      <div class="card reveal in" id="paymentCard">
+        <div id="iyzipay-checkout-form" class="responsive"></div>
+        <div id="noPayment" style="display:none;" class="text-center">
+          <p class="text-dim mb-16">Ödeme bilgisi bulunamadı. Lütfen paket seçim sayfasına dönüp tekrar dene.</p>
+          <a href="hesap.html" class="btn btn-primary">Hesabım Sayfasına Dön</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="assets/data/site-config.js"></script>
+<script src="assets/js/content.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/data/projects.js"></script>
+<script src="assets/data/posts.js"></script>
+<script src="assets/data/prompts.js"></script>
+<script src="assets/data/documents.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/auth-client.js"></script>
+<script src="assets/js/partials.js"></script>
+<script>
+  // Iyzico'nun checkoutFormContent'i (hesap.html'de sessionStorage'a yazıldı) hem
+  // HTML hem <script> içerir. innerHTML script'leri otomatik çalıştırmaz, bu yüzden
+  // burada script etiketlerini elle yeniden oluşturup çalıştırıyoruz.
+  function injectWithScripts(container, htmlString) {
+    const temp = document.createElement("div");
+    temp.innerHTML = htmlString;
+    Array.from(temp.childNodes).forEach((node) => {
+      if (node.tagName === "SCRIPT") {
+        const s = document.createElement("script");
+        if (node.src) s.src = node.src;
+        s.textContent = node.textContent;
+        container.appendChild(s);
+      } else {
+        container.appendChild(node);
+      }
+    });
+  }
+
+  const content = sessionStorage.getItem("iyzico_checkout_form");
+  if (!content) {
+    document.getElementById("noPayment").style.display = "block";
+  } else {
+    injectWithScripts(document.getElementById("iyzipay-checkout-form"), content);
+    sessionStorage.removeItem("iyzico_checkout_form");
+  }
+</script>
+</body>
+</html>

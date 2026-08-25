@@ -15,8 +15,11 @@ window.DOCUMENTS = [
     category: "Yapay Zekâ",
     date: "2026-08-25",
     fileType: "DOCX",
-    fileName: "gemini-gorsel-rehberi.docx", // PLACEHOLDER - gerçek dosyayı assets/documents/ içine ekle
-    fileUrl: "assets/documents/gemini-gorsel-rehberi.docx",
+    fileName: "gemini-gorsel-rehberi.docx",
+    // Bu doküman TEMEL üyelere özel: gerçek indirme linki burada DEĞİL, backend'de tutuluyor.
+    protected: true,
+    requiredPlan: "TEMEL",
+    fileUrl: "",
     cover: "",
     description: "Gemini kullanarak daha kaliteli görseller üretmek için hazırladığım prompt ve yöntem rehberi.",
     tags: ["Gemini", "AI", "GörselÜretim"]

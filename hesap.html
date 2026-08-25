@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hesabım | Erkan Demirci</title>
+<meta name="description" content="Giriş yap, hesabını yönet ve abonelik paketini seç." />
+<link rel="canonical" href="hesap.html" />
+<link rel="icon" type="image/jpeg" href="assets/images/erkan-avatar.jpg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<a href="#main" class="skip-link">İçeriğe geç</a>
+<div id="site-header"></div>
+
+<main id="main">
+  <section class="page-header">
+    <div class="container">
+      <div class="breadcrumb reveal in"><a href="index.html">Ana Sayfa</a> / Hesabım</div>
+      <div class="eyebrow reveal in">Hesabım</div>
+      <h1 class="reveal in" id="pageHeading">Giriş Yap veya Kayıt Ol</h1>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container" style="max-width:760px;">
+
+      <!-- Giriş yapmamış kullanıcı için: giriş/kayıt formu -->
+      <div id="authSection" class="reveal in">
+        <div class="card">
+          <div class="auth-tabs">
+            <button class="auth-tab active" data-tab="login">Giriş Yap</button>
+            <button class="auth-tab" data-tab="register">Kayıt Ol</button>
+          </div>
+
+          <div id="formMsg" class="form-msg"></div>
+
+          <form id="loginForm">
+            <div class="grid" style="gap:16px;">
+              <div class="field"><label for="loginEmail">E-posta</label><input type="email" id="loginEmail" required /></div>
+              <div class="field"><label for="loginPassword">Şifre</label><input type="password" id="loginPassword" required /></div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block mt-24">Giriş Yap</button>
+          </form>
+
+          <form id="registerForm" style="display:none;">
+            <div class="grid" style="gap:16px;">
+              <div class="field"><label for="regName">Ad Soyad</label><input type="text" id="regName" /></div>
+              <div class="field"><label for="regEmail">E-posta</label><input type="email" id="regEmail" required /></div>
+              <div class="field"><label for="regPassword">Şifre (en az 8 karakter)</label><input type="password" id="regPassword" required minlength="8" /></div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block mt-24">Hesap Oluştur</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Giriş yapmış kullanıcı için: hesap bilgisi + plan seçimi -->
+      <div id="accountSection" class="reveal in" style="display:none;">
+        <div class="card mb-16">
+          <div class="flex justify-between items-center" style="flex-wrap:wrap; gap:16px;">
+            <div>
+              <h3 style="font-size:1.1rem; margin-bottom:6px;" id="accountName">-</h3>
+              <p class="text-faint" style="font-size:0.85rem;" id="accountEmail">-</p>
+            </div>
+            <div class="flex items-center gap-12">
+              <span class="plan-badge-current" id="planBadge">-</span>
+              <button class="btn btn-secondary btn-sm" id="logoutBtn">Çıkış Yap</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom:8px;">Abonelik Paketleri</h3>
+          <p class="text-dim" style="font-size:0.9rem;">Bir paket seçtiğinde Iyzico güvenli ödeme sayfasına yönlendirileceksin.</p>
+          <div class="plan-pick-grid" id="planGrid"></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="assets/data/site-config.js"></script>
+<script src="assets/data/projects.js"></script>
+<script src="assets/data/posts.js"></script>
+<script src="assets/data/prompts.js"></script>
+<script src="assets/data/documents.js"></script>
+<script src="assets/js/content.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/auth-client.js"></script>
+<script src="assets/js/partials.js"></script>
+<script>
+  const nextUrl = Content.getQueryParam("next");
+  const upgradeTo = Content.getQueryParam("upgrade");
+
+  function showMsg(text, type) {
+    const el = document.getElementById("formMsg");
+    el.textContent = text;
+    el.className = "form-msg " + type;
+  }
+
+  function switchTab(tab) {
+    document.querySelectorAll(".auth-tab").forEach(t => t.classList.toggle("active", t.dataset.tab === tab));
+    document.getElementById("loginForm").style.display = tab === "login" ? "block" : "none";
+    document.getElementById("registerForm").style.display = tab === "register" ? "block" : "none";
+    document.getElementById("formMsg").className = "form-msg";
+  }
+  document.querySelectorAll(".auth-tab").forEach(t => t.addEventListener("click", () => switchTab(t.dataset.tab)));
+
+  document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+    const { ok, data } = await AuthClient.login(email, password);
+    if (!ok) return showMsg(data?.error || "Giriş yapılamadı.", "error");
+    afterAuthSuccess();
+  });
+
+  document.getElementById("registerForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const fullName = document.getElementById("regName").value;
+    const email = document.getElementById("regEmail").value;
+    const password = document.getElementById("regPassword").value;
+    const { ok, data } = await AuthClient.register(email, password, fullName);
+    if (!ok) return showMsg(data?.error || "Kayıt oluşturulamadı.", "error");
+    afterAuthSuccess();
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    await AuthClient.logout();
+    window.location.reload();
+  });
+
+  function afterAuthSuccess() {
+    if (nextUrl) { window.location.href = nextUrl; return; }
+    window.location.reload();
+  }
+
+  async function renderPlans(currentPlanKey) {
+    const plans = await AuthClient.getPlans();
+    const grid = document.getElementById("planGrid");
+    grid.innerHTML = plans.filter(p => p.key !== "FREE").map(p => `
+      <div class="plan-pick-card ${p.key === upgradeTo ? 'highlight' : ''}">
+        <h4>${Content.escapeHtml(p.name)}</h4>
+        <div class="price">${p.priceTRY} TL <span>/ 30 gün</span></div>
+        <p style="font-size:0.85rem;" class="text-dim">${Content.escapeHtml(p.description || "")}</p>
+        ${currentPlanKey === p.key
+          ? `<span class="mini-tag mt-16" style="display:inline-block;">Mevcut Paketin</span>`
+          : `<button class="btn btn-primary btn-block mt-16" data-plan="${p.key}">Bu Paketi Seç</button>`}
+      </div>
+    `).join("");
+
+    grid.querySelectorAll("[data-plan]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        btn.textContent = "Yönlendiriliyor...";
+        btn.disabled = true;
+        const { ok, data } = await AuthClient.startCheckout(btn.getAttribute("data-plan"));
+        if (!ok) {
+          window.showToast(data?.error || "Ödeme başlatılamadı.");
+          btn.textContent = "Bu Paketi Seç";
+          btn.disabled = false;
+          return;
+        }
+        sessionStorage.setItem("iyzico_checkout_form", data.checkoutFormContent || "");
+        window.location.href = "odeme.html";
+      });
+    });
+  }
+
+  async function init() {
+    const me = await AuthClient.getMe();
+    if (me) {
+      document.getElementById("pageHeading").textContent = "Hesabım";
+      document.getElementById("authSection").style.display = "none";
+      document.getElementById("accountSection").style.display = "block";
+      document.getElementById("accountName").textContent = me.fullName || "Hoş geldin";
+      document.getElementById("accountEmail").textContent = me.email;
+      document.getElementById("planBadge").textContent = (AuthClient.PLAN_LABELS[me.plan] || me.plan) + " Paket";
+      renderPlans(me.plan);
+    } else {
+      switchTab("login");
+    }
+  }
+  init();
+</script>
+</body>
+</html>

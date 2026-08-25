@@ -17,6 +17,11 @@ window.SITE_CONFIG = {
   name: "Erkan Demirci",
   initials: "ED",
 
+  // Üyelik/abonelik backend'inin adresi. Yerelde test ederken bu değeri
+  // değiştirmene gerek yok. Backend'i Render/Railway gibi bir yere taşıdığında
+  // buradaki adresi oradan aldığın gerçek URL ile değiştir (sonunda /api ile).
+  apiBaseUrl: "http://localhost:4000/api",
+
   // Hero & marka mesajları — istediğin zaman değiştirebilirsin
   heroKicker: "Teknoloji · Yapay Zekâ · Eğitim",
   heroTitle: "Teknoloji, Yapay Zekâ ve Eğitimle Üretiyorum.",

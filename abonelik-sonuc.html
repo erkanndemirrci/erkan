@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Abonelik Sonucu | Erkan Demirci</title>
+<meta name="robots" content="noindex" />
+<link rel="icon" type="image/jpeg" href="assets/images/erkan-avatar.jpg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<a href="#main" class="skip-link">İçeriğe geç</a>
+<div id="site-header"></div>
+
+<main id="main">
+  <section class="page-header text-center">
+    <div class="container" style="max-width:560px;">
+      <div id="resultBox" class="card reveal in" style="padding:48px 32px;"></div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="assets/data/site-config.js"></script>
+<script src="assets/js/content.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/data/projects.js"></script>
+<script src="assets/data/posts.js"></script>
+<script src="assets/data/prompts.js"></script>
+<script src="assets/data/documents.js"></script>
+<script src="assets/js/search.js"></script>
+<script src="assets/js/auth-client.js"></script>
+<script src="assets/js/partials.js"></script>
+<script>
+  const status = Content.getQueryParam("status");
+  const plan = Content.getQueryParam("plan");
+  const box = document.getElementById("resultBox");
+
+  const views = {
+    success: {
+      icon: "✓",
+      title: "Ödemen Alındı!",
+      text: `${AuthClient.PLAN_LABELS[plan] || plan || ""} paketin aktif edildi. Artık paket kapsamındaki tüm içeriklere erişebilirsin.`,
+      cta: `<a href="hesap.html" class="btn btn-primary mt-24">Hesabıma Git</a>`,
+    },
+    failed: {
+      icon: "✕",
+      title: "Ödeme Tamamlanamadı",
+      text: "Kartınla ilgili bir sorun oluştu ya da ödeme iptal edildi. Tekrar denemek ister misin?",
+      cta: `<a href="hesap.html" class="btn btn-primary mt-24">Tekrar Dene</a>`,
+    },
+    error: {
+      icon: "!",
+      title: "Bir Şeyler Ters Gitti",
+      text: "Ödeme durumu doğrulanamadı. Lütfen birkaç dakika sonra hesabını kontrol et, yine de sorun sürerse bizimle iletişime geç.",
+      cta: `<a href="iletisim.html" class="btn btn-secondary mt-24">İletişime Geç</a>`,
+    },
+  };
+
+  const view = views[status] || views.error;
+  box.innerHTML = `
+    <div style="font-size:2.2rem; margin-bottom:16px;">${view.icon}</div>
+    <h2 style="margin-bottom:12px;">${view.title}</h2>
+    <p class="text-dim">${view.text}</p>
+    ${view.cta}
+  `;
+</script>
+</body>
+</html>

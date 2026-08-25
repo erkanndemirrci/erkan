@@ -555,6 +555,32 @@ p{ color:var(--c-text-dim); }
 .tool-chip:hover{ border-color:var(--c-border-strong); transform:translateY(-2px); }
 .tool-chip .dot{ width:8px; height:8px; border-radius:50%; }
 
+/* ---------- ÜYELİK / ABONELİK: kilit rozeti ve paywall ---------- */
+.lock-badge{
+  display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; font-family:var(--font-mono);
+  color:#FFC15E; border:1px solid rgba(255,193,94,0.35); background:rgba(255,193,94,0.08);
+  padding:4px 10px; border-radius:var(--radius-pill);
+}
+.prompt-preview.locked{ display:flex; align-items:center; justify-content:center; text-align:center; color:var(--c-text-faint); min-height:64px; }
+.paywall-card{
+  text-align:center; padding:48px 32px; background:var(--gradient-brand-soft);
+  border:1px solid var(--c-border-strong); border-radius:var(--radius-lg);
+}
+.paywall-card .lock-icon{ width:56px; height:56px; margin:0 auto 20px; border-radius:16px; background:var(--c-surface); border:1px solid var(--c-border-strong); display:flex; align-items:center; justify-content:center; color:#FFC15E; }
+.plan-pick-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px; max-width:520px; margin:28px auto 0; }
+@media (max-width:640px){ .plan-pick-grid{ grid-template-columns:1fr; } }
+.plan-pick-card{ background:var(--c-bg-2); border:1px solid var(--c-border); border-radius:var(--radius-md); padding:22px; text-align:left; }
+.plan-pick-card.highlight{ border-color:var(--c-cyan); box-shadow:0 0 0 1px rgba(0,217,255,0.25); }
+.plan-pick-card .price{ font-family:var(--font-display); font-size:1.6rem; font-weight:700; margin:10px 0; }
+.plan-pick-card .price span{ font-size:0.85rem; font-weight:500; color:var(--c-text-faint); }
+.auth-tabs{ display:flex; gap:8px; margin-bottom:24px; border-bottom:1px solid var(--c-border); }
+.auth-tab{ padding:12px 4px; font-weight:600; color:var(--c-text-faint); border-bottom:2px solid transparent; margin-right:20px; }
+.auth-tab.active{ color:var(--c-text); border-color:var(--c-cyan); }
+.form-msg{ font-size:0.85rem; padding:10px 14px; border-radius:10px; margin-bottom:16px; display:none; }
+.form-msg.error{ display:block; background:rgba(255,90,90,0.08); border:1px solid rgba(255,90,90,0.3); color:#FF8080; }
+.form-msg.success{ display:block; background:rgba(95,224,165,0.08); border:1px solid rgba(95,224,165,0.3); color:#5FE0A5; }
+.plan-badge-current{ display:inline-flex; align-items:center; gap:8px; padding:8px 16px; border-radius:var(--radius-pill); background:var(--gradient-brand); color:#fff; font-weight:600; font-size:0.9rem; }
+
 /* Placeholder cover image (data-driven gradient blocks when no real photo) */
 .ph-cover{
   width:100%; height:100%; display:flex; align-items:center; justify-content:center;

@@ -85,7 +85,11 @@ window.PROMPTS = [
     difficulty: "Zor",
     purpose: "Tutarlı bir AI karakterin kısa bir animasyon sahnesinde hareket etmesini sağlamak.",
     excerpt: "Karakter tutarlılığını korurken doğal hareket ve mimik üreten ileri seviye video prompt.",
-    promptText: `Karakter [KARAKTER TANIMI] sahnede doğal bir yürüyüşle kameraya doğru ilerliyor, yüz ifadesi sakin ve kendinden emin, saç ve kıyafet fizik kurallarına uygun hareket ediyor, arka plan hafif hareketli, sinematik ışıklandırma, 24fps sinematik his, kamera sabit orta plan.`,
+    // Bu prompt PRO üyelere özel: tam metin burada DEĞİL, backend'de tutuluyor.
+    // Erişim kontrolü assets/js/auth-client.js + prompt-detay.html üzerinden yapılıyor.
+    protected: true,
+    requiredPlan: "PRO",
+    promptText: "",
     tags: ["Kling", "Video", "AIKarakter"],
     beforeImage: "",
     afterImage: ""

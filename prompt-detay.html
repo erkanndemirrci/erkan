@@ -41,11 +41,37 @@
 <script src="assets/js/content.js"></script>
 <script src="assets/js/ui.js"></script>
 <script src="assets/js/search.js"></script>
+<script src="assets/js/auth-client.js"></script>
 <script src="assets/js/partials.js"></script>
 <script>
   const slug = Content.getQueryParam("slug");
   const pr = PROMPTS.find(p => p.slug === slug);
   const diffClass = { "Kolay": "diff-kolay", "Orta": "diff-orta", "Zor": "diff-zor" };
+
+  function promptBodyHtml(pr, unlockedText) {
+    if (pr.protected && !unlockedText) {
+      return `
+        <div class="paywall-card">
+          <div class="lock-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          </div>
+          <h3 style="margin-bottom:10px;">Bu Prompt ${Content.escapeHtml(Content.planLabel[pr.requiredPlan] || pr.requiredPlan)} Üyelere Özel</h3>
+          <p class="text-dim" style="max-width:420px; margin:0 auto;">Tam prompt metnini görmek ve kopyalamak için ${Content.escapeHtml(Content.planLabel[pr.requiredPlan] || pr.requiredPlan)} paketine abone olman gerekiyor.</p>
+          <div class="hero-ctas mt-24" style="justify-content:center;">
+            <a href="hesap.html?upgrade=${encodeURIComponent(pr.requiredPlan)}&next=${encodeURIComponent(window.location.href)}" class="btn btn-primary">Abone Ol</a>
+            <a href="hesap.html?next=${encodeURIComponent(window.location.href)}" class="btn btn-secondary">Zaten üyeyim, giriş yap</a>
+          </div>
+        </div>
+      `;
+    }
+    return `
+      <div class="flex justify-between items-center mb-16" style="flex-wrap:wrap; gap:12px;">
+        <h3 style="margin:0;">Prompt</h3>
+        <button class="copy-btn" id="copyBtn">Promptu Kopyala</button>
+      </div>
+      <div class="prompt-full">${Content.escapeHtml(unlockedText || pr.promptText)}</div>
+    `;
+  }
 
   if (!pr) {
     document.getElementById("notFound").style.display = "block";
@@ -86,11 +112,7 @@
                 <div class="ph-cover" style="aspect-ratio:16/9; border-radius:var(--radius-lg); margin-bottom:32px;"><span>Sonuç Görseli — yakında</span></div>
               `}
 
-              <div class="flex justify-between items-center mb-16" style="flex-wrap:wrap; gap:12px;">
-                <h3 style="margin:0;">Prompt</h3>
-                <button class="copy-btn" id="copyBtn">Promptu Kopyala</button>
-              </div>
-              <div class="prompt-full">${Content.escapeHtml(pr.promptText)}</div>
+              <div id="promptBody">${promptBodyHtml(pr, null)}</div>
 
               <div class="divider"></div>
               <div class="tag-cloud">
@@ -127,9 +149,23 @@
       </section>
     `;
 
-    document.getElementById("copyBtn").addEventListener("click", function () {
-      copyToClipboard(pr.promptText, this);
-    });
+    function wireCopyButton(text) {
+      const btn = document.getElementById("copyBtn");
+      if (btn) btn.addEventListener("click", function () { copyToClipboard(text, this); });
+    }
+
+    if (pr.protected) {
+      // Kullanıcı zaten yetkiliyse (giriş yapmış + planı yeterliyse) backend gerçek metni döner.
+      AuthClient.fetchProtectedContent(pr.slug).then((result) => {
+        if (result.allowed && result.content.fullText) {
+          document.getElementById("promptBody").innerHTML = promptBodyHtml(pr, result.content.fullText);
+          wireCopyButton(result.content.fullText);
+        }
+        // allowed değilse mevcut paywall zaten gösteriliyor, ek bir şey yapmaya gerek yok.
+      }).catch(() => { /* backend'e ulaşılamazsa paywall görünmeye devam eder */ });
+    } else {
+      wireCopyButton(pr.promptText);
+    }
   }
 </script>
 </body>
